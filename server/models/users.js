@@ -7,7 +7,6 @@ const UserSchema = new Schema({
     password: String,
     geo_id: String,
     address: String,
-    orders: [{type: Schema.Types.ObjectId, ref: 'Order'}]
 });
 
 module.exports = mongoose.model('User', UserSchema);

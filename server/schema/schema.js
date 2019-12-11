@@ -2,7 +2,7 @@ const graphql = require('graphql');
 const mongoose = require('mongoose');
 
 const User = require('../models/users')
-const Order = require('../models/orders').default
+const Order = require('../models/orders')
 const Item = require('../models/items')
 
 mongoose.set('useFindAndModify', false);
@@ -13,8 +13,9 @@ const {
     GraphQLNonNull,
     GraphQLSchema,
     GraphQLList,
-    GraphQLBoolean, 
-    GraphQLObjectType } = graphql;
+    GraphQLFloat,
+    GraphQLBoolean,
+    GraphQLInt } = graphql;
 
 const ItemType = new GraphQLObjectType({
     name: 'Item',
@@ -22,7 +23,7 @@ const ItemType = new GraphQLObjectType({
         id: { type: GraphQLString },
         name: { type: GraphQLString },
         description: { type: GraphQLString },
-        price: { type: Number },
+        price: { type: GraphQLFloat },
         category: { type: GraphQLString },
         img: { type: GraphQLString }
     })
@@ -41,76 +42,132 @@ const UserType = new GraphQLObjectType({
         orders: {
             type: new GraphQLList(OrderType),
             resolve(parent, _) {
-                return Order.find({user_id: parent.id})
+                return Order.find({ user_id: parent.id })
             }
         }
     })
 });
 
 const OrderType = new GraphQLObjectType({
-    name: 'Message',
+    name: 'Order',
     fields: () => ({
         id: { type: GraphQLString },
         date: { type: GraphQLString },
-        status: {type: GraphQLBoolean},
+        status: { type: GraphQLBoolean },
         user_id: { type: GraphQLString },
+        items_count: {type: new GraphQLList(GraphQLString)},
         user: {
             type: UserType,
-            resolve(parent, _){
+            resolve(parent, _) {
                 return User.findById(parent.user_id)
             }
         },
-        items: {type: new GraphQLList(ItemType)}
+        items: {
+            type: new GraphQLList(ItemType),
+            resolve(parent, _) {
+                return Item.find({ _id: { $in: parent.items_id } })
+            }
+        }
+    })
+});
+
+const OrdersWithCountType = new GraphQLObjectType({
+    name: 'CountedOrders',
+    fields: () => ({
+        count: { type: GraphQLInt },
+        data: { type: new GraphQLList(OrderType) }
+    })
+});
+
+const ItemsWithCountType = new GraphQLObjectType({
+    name: 'ItemsWithCount',
+    fields: () => ({
+        count: { type: GraphQLInt },
+        data: { type: new GraphQLList(ItemType) }
     })
 });
 
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
-        user: {
+        user_with_id: {
             type: UserType,
             args: {
-                name:  { type: GraphQLString },
-                surname: { type: GraphQLString },
-                gei_id: { type: GraphQLString } 
+                geo_id: { type: GraphQLString }
             },
             resolve(_, args) {
-                return User.findOne({ userName: args.userName })
+                return User.findOne({ geo_id: args.geo_id })
             }
         },
-        userConf: {
+        user_with_password: {
             type: UserType,
-            args: { userName: { type: GraphQLString }, password: { type: GraphQLString } },
+            args: {
+                password: { type: GraphQLString },
+                geo_id: { type: GraphQLString }
+            },
             resolve(_, args) {
-                return User.findOne({ userName: args.userName, password: args.password })
+                return User.findOne({ $and: [{ geo_id: args.geo_id }, { password: args.password }] })
             }
         },
-        messages: {
-            type: MessageType,
-            args: { roomId: { type: GraphQLString } },
+        order_with_id: {
+            type: OrderType,
+            args: {
+                id: { type: GraphQLString }
+            },
             resolve(_, args) {
-                return Message.find({ roomId: args.id });
+                return Order.findById(args.id)
             }
         },
-        usersInRoom: {
-            type: new GraphQLList(UserType),
-            args: { roomId: { type: GraphQLString } },
+        orders: {
+            type: OrdersWithCountType,
+            args: {
+                limit: { type: GraphQLInt, defaultValue: -1 },
+                skip: { type: GraphQLInt, defaultValue: 0 },
+                sort_field: { type: GraphQLString, defaultValue: "date" },
+                sort_direction: { type: GraphQLInt, defaultValue: 1 }
+            },
             resolve(_, args) {
-                return User.find({ roomId: args.roomId });
+                if (args.limit > 0) {
+                    return {
+                        count: Order.countDocuments({}),
+                        data: Order.find({})
+                            .sort({ sort_field: args.sort_direction })
+                            .skip(args.skip)
+                            .limit(args.limit)
+                    }
+                } else {
+                    return {
+                        count: Order.countDocuments({}),
+                        data: Order.find({})
+                            .sort({ sort_field: args.sort_direction })
+                    }
+                }
             }
         },
-        room: {
-            type: RoomType,
-            args: { roomName: { type: GraphQLString } },
+        items: {
+            type: ItemsWithCountType,
+            args: {
+                limit: { type: GraphQLInt, defaultValue: -1 },
+                skip: { type: GraphQLInt, defaultValue: 0 },
+                sort_field: { type: GraphQLString, defaultValue: "name" },
+                sort_direction: { type: GraphQLInt, defaultValue: 1 }
+            },
             resolve(_, args) {
-                return Room.findOne({ roomName: args.roomName })
-            }
-        },
-        roomById: {
-            type: RoomType,
-            args: { id: { type: GraphQLString } },
-            resolve(_, args) {
-                return Room.findById(args.id)
+                if (args.limit > 0) {
+                    return {
+                        count: Item.countDocuments({}),
+                        data: Item.find({})
+                            .sort({ sort_field: args.sort_direction })
+                            .skip(args.skip)
+                            .limit(args.limit)
+                    }
+                } else {
+                    return {
+                        count: Item.countDocuments({}),
+                        data: Item.find({})
+                            .sort({ sort_field: args.sort_direction })
+                    }
+                }
             }
         }
     }
@@ -119,84 +176,109 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
-        addUser: {
+        //-------------------------------------------------------------------------------------------
+        //------------------------ User mutations ( add_user, remove_user ) -------------------------
+        //-------------------------------------------------------------------------------------------
+        add_user: {
             type: UserType,
             args: {
-                userName: { type: new GraphQLNonNull(GraphQLString) },
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                surname: { type: new GraphQLNonNull(GraphQLString) },
                 password: { type: new GraphQLNonNull(GraphQLString) },
-                roomId: { type: new GraphQLNonNull(GraphQLString) }
+                geo_id: { type: new GraphQLNonNull(GraphQLString) },
+                address: { type: new GraphQLNonNull(GraphQLString) },
             },
             resolve(_, args) {
                 let user = new User({
-                    userName: args.userName,
+                    name: args.name,
+                    surname: args.surname,
                     password: args.password,
-                    lastActive: new Date().toString(),
-                    roomId: args.roomId
+                    geo_id: args.geo_id,
+                    address: args.address,
                 })
                 return user.save();
             }
         },
-        updateLastActive: {
-            type: UserType,
-            args: {
-                id: { type: new GraphQLNonNull(GraphQLString) }
-            },
-            resolve(_, args) {
-                return User.findByIdAndUpdate(args.id, {
-                    lastActive: new Date().toString()
-                }, { new: true });
-            }
-        },
-        removeUser: {
+        remove_user: {
             type: UserType,
             args: { id: { type: new GraphQLNonNull(GraphQLString) } },
             resolve(_, args) {
                 const removedUser = User.findByIdAndRemove(args.id).exec();
-                if (!removedUser) {
-                    throw new Error(`Couldn't find User with id: ${args.id}`)
-                } else {
+                if (removedUser) {
                     return removedUser;
+                } else {
+                    console.log(`Couldn't find User with id: ${args.id}`)
                 }
             }
         },
-        addRoom: {
-            type: RoomType,
+        //-------------------------------------------------------------------------------------------
+        //---------------------- Item mutations ( add_item, update_price, remove_item ) -------------
+        //-------------------------------------------------------------------------------------------
+        add_item: {
+            type: ItemType,
             args: {
-                roomName: { type: new GraphQLNonNull(GraphQLString) },
+                name: { type: new GraphQLNonNull(GraphQLString) },
+                description: { type: new GraphQLNonNull(GraphQLString) },
+                price: { type: new GraphQLNonNull(GraphQLFloat) },
+                category: { type: new GraphQLNonNull(GraphQLString) },
+                img: { type: new GraphQLNonNull(GraphQLString) }
             },
             resolve(_, args) {
-                let room = new Room({
-                    roomName: args.roomName
-                });
-                return room.save();
+                let item = new Item({
+                    name: args.name,
+                    description: args.description,
+                    price: args.price,
+                    category: args.category,
+                    img: args.img
+                })
+                return item.save();
             }
         },
-        removeRoom: {
-            type: RoomType,
+        update_price: {
+            type: ItemType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) },
+                price: { type: new GraphQLNonNull(GraphQLFloat) }
+            },
+            resolve(_, args) {
+                return Item.findByIdAndUpdate(args.id, {
+                    price: args.price
+                }, { new: true });
+            }
+        },
+        remove_item: {
+            type: ItemType,
             args: { id: { type: new GraphQLNonNull(GraphQLString) } },
             resolve(_, args) {
-                const removedPost = Room.findByIdAndRemove(args.id).exec();
-                if (!removedPost) {
-                    throw new Error(`Couldn't find Post with id: ${args.id}`)
+                const removedItem = Item.findByIdAndRemove(args.id).exec();
+                if (removedItem) {
+                    return removedItem;
+                } else {
+                    console.log(`Couldn't find Item with id: ${args.id}`)
                 }
-                const removedMessages = Message.deleteMany({ roomId: args.id }).exec()
-                if (!removedMessages) {
-                    console.log('there were no messages in this room')
-                }
-                return removedPost;
             }
         },
-        removeMessages: {
-            type: MessageType,
-            args: { roomId: { type: new GraphQLNonNull(GraphQLString) } },
+        //-------------------------------------------------------------------------------------------
+        //------------------- Order mutations ( add_order, update_order, remove_order ) -------------
+        //-------------------------------------------------------------------------------------------
+        add_order: {
+            type: OrderType,
+            args: {
+                user_id: { type: new GraphQLNonNull(GraphQLString) },
+                items_id: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+                items_count: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+            },
             resolve(_, args) {
-                const removedMessages = Message.deleteMany({ roomId: args.id }).exec()
-                if (!removedMessages) {
-                    console.log('there were no messages in this room')
-                }
-                return removedMessages;
+                let order = new Order({
+                    date: new Date().toLocaleString(),
+                    status: args.status,
+                    user_id: args.user_id,
+                    items_id: args.items_id,
+                    items_count: args.items_count
+                })
+                return order.save();
             }
-        }
+        },
     }
 })
 module.exports = new GraphQLSchema({

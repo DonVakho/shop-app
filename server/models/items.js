@@ -9,4 +9,4 @@ const ItemSchema = new Schema({
     img: String
 });
 
-module.exports = mongoose.model('Item', MessageSchema);
+module.exports = mongoose.model('Item', ItemSchema);

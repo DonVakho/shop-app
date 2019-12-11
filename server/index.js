@@ -6,7 +6,7 @@ const cors = require('cors')
 const schema = require( './schema/schema')
 const router = require('./router')
 
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 5000
 
 const app = express()
 const server = http.createServer(app)
@@ -19,7 +19,7 @@ app.use('/entrance', graphqlHTTP({
 }));
 
 //connect to database
-const uri = "mongodb+srv://user_vakho:123@chatapp-nisch.mongodb.net/test?retryWrites=true&w=majority"
+const uri = "mongodb+srv://otaku:otaku@cluster0-bowag.mongodb.net/test?retryWrites=true&w=majority"
 
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connection.once('open', () => {
