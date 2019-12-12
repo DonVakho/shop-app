@@ -7,5 +7,17 @@ export default class FilterStore {
         this.rootStore = rootStore;
     }
     @observable
-    category: string = ''
+    category: string = 'all'
+
+    @observable
+    thematicsGeneral: string = 'all'
+
+    @observable
+    thematicsNarrow: string = 'all'
+
+    public clearStore = () => {
+        this.category = 'all'
+        this.thematicsGeneral = 'all'
+        this.thematicsNarrow = 'all'
+    }
 }

@@ -13,12 +13,11 @@ import {
   Menu
 } from '@material-ui/core'
 
-
-import MenuIcon from '@material-ui/icons/Menu'
 import SearchIcon from '@material-ui/icons/Search'
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import MoreIcon from '@material-ui/icons/MoreVert'
+import FilterIcon from '../../assets/filter_white.png'
 
 import { RootStoreContext } from '../../stores/RootStore'
 
@@ -171,7 +170,7 @@ const NavBar: React.FC = observer(() => {
               className={classes.menuButton}
               onClick={() => store.navBarStore.showFilter = true}
             >
-              <MenuIcon />
+               <img src={FilterIcon} alt="filter" />
             </IconButton>
             <Typography className={classes.title} variant="h6" noWrap> Otaku Shop </Typography>
             <div className={classes.search}>
