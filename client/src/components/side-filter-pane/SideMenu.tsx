@@ -7,7 +7,7 @@ import {
 } from '@material-ui/core';
 
 import { RootStoreContext } from '../../stores/RootStore'
-import FilterForm from './FilterForm'
+import FilterForm from './filter-form/FilterForm'
 
 const useStyles = makeStyles({
     list: {

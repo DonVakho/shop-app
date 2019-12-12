@@ -1,7 +1,7 @@
 import React from 'react'
 
-import NavBar from './NavBar'
-import SideMenu from './SideMenu'
+import NavBar from '../navbar/NavBar'
+import SideMenu from '../side-filter-pane/SideMenu'
 
 interface IProps {
 }

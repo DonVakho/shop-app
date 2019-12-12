@@ -1,7 +1,8 @@
 import React, { useContext } from 'react'
 import { observer } from 'mobx-react'
-import { fade, makeStyles, Theme, createStyles } from '@material-ui/core/styles'
 import Avatar from 'react-avatar'
+import { fade, makeStyles, Theme, createStyles } from '@material-ui/core/styles'
+
 import {
   AppBar,
   Toolbar,
@@ -14,8 +15,8 @@ import {
 } from '@material-ui/core'
 
 import SearchIcon from '@material-ui/icons/Search'
-import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
-import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined'
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 import MoreIcon from '@material-ui/icons/MoreVert'
 import FilterIcon from '../../assets/filter_white.png'
 

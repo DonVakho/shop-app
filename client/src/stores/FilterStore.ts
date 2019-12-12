@@ -1,23 +1,26 @@
-import {observable} from 'mobx'
-import {RootStore} from './RootStore'
+import { observable } from 'mobx'
+import { RootStore } from './RootStore'
+
+import { IFilterProps } from '../Interfaces'
 
 export default class FilterStore {
     rootStore: RootStore
-    constructor(rootStore: RootStore){
+    constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
     }
-    @observable
-    category: string = 'all'
 
     @observable
-    thematicsGeneral: string = 'all'
-
-    @observable
-    thematicsNarrow: string = 'all'
+    filter: IFilterProps = {
+        category: 'all',
+        thematicsGeneral: 'all',
+        thematicsNarrow: 'all'
+    }
 
     public clearStore = () => {
-        this.category = 'all'
-        this.thematicsGeneral = 'all'
-        this.thematicsNarrow = 'all'
+        this.filter = {
+            category: 'all',
+            thematicsGeneral: 'all',
+            thematicsNarrow: 'all'
+        }
     }
 }
