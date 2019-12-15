@@ -100,6 +100,9 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
         sliderContainer: {
             flexGrow: 0
+        },
+        rotatedIcon: {
+            transform: 'rotate(180deg)'
         }
     }),
 );

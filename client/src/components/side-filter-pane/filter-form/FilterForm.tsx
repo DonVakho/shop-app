@@ -68,11 +68,14 @@ const FilterForm: React.FC = observer(() => {
             thematicsNarrow: 'all',
             price: [0, store.filterStore.maxPrice]
         })
-        store.navBarStore.showFilter = false
     }
 
     const applyFilter = () => {
         store.filterStore.filter = state
+        store.navBarStore.showFilter = false
+    }
+
+    const closeFilter = () => {
         store.navBarStore.showFilter = false
     }
     return (
@@ -138,6 +141,7 @@ const FilterForm: React.FC = observer(() => {
                 <div className={classes.buttonContainer}>
                     <Button color='primary' onClick={applyFilter}>Go <DoubleArrowIcon /></Button>
                     <Button color='secondary' onClick={clearFilter}>Clear <HighlightOffIcon /></Button>
+                    <Button color='secondary' onClick={closeFilter}>close <DoubleArrowIcon className={classes.rotatedIcon} /></Button>
                 </div>
             </FormControl>
         </form>
