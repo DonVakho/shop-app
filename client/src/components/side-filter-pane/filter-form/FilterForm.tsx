@@ -1,54 +1,48 @@
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames'
+import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 
 import {
     FormControl,
-    RadioGroup,
-    Radio,
-    Slider,
     InputLabel,
     FormHelperText,
     NativeSelect,
-    Divider,
-    Button
+    Button,
+    Typography,
 } from '@material-ui/core';
 
 import {
     BootstrapInput,
-    useStyles
+    useStyles,
+    PriceSlider
 } from './Styles'
 
 import {
     CATEGORIES,
     GENERAL_THEMATICS,
-    NARROW_THEMATICS
+    NARROW_THEMATICS,
 } from '../../RefData'
 
 import { RootStoreContext } from '../../../stores/RootStore'
-import { IFilterProps } from '../../../Interfaces'
 
 
-interface IProps {
-}
-
-const FilterForm: React.FC<IProps> = observer(() => {
+const FilterForm: React.FC = observer(() => {
 
     const classes = useStyles({} as any);
     const store = useContext(RootStoreContext)
-    const [state, setState] = useState({
-        category: 'all',
-        thematicsGeneral: 'all',
-        thematicsNarrow: 'all'
-    } as IFilterProps)
+    const [state, setState] = useState(store.filterStore.filter)
 
     const renderList = (list: string[] = []) => (
         list.map(item =>
-            <option className={classes.option} key={item} value={item}>
+            <option key={item} value={item}>
                 {item}
             </option>
         )
     )
+
+    const valuetext = (value: number) => (`${value}₾`)
 
     const handleCategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         setState({ ...state, category: (event.target.value as string) })
@@ -61,12 +55,20 @@ const FilterForm: React.FC<IProps> = observer(() => {
         setState({ ...state, thematicsNarrow: (event.target.value as string) })
     };
 
+    const handlePriceSliderChange = (event: any, newValue: number | number[]) => {
+        setState({
+            ...state, price: newValue as number[]
+        })
+    };
+
     const clearFilter = () => {
         setState({
             category: 'all',
             thematicsGeneral: 'all',
-            thematicsNarrow: 'all'
+            thematicsNarrow: 'all',
+            price: [0, store.filterStore.maxPrice]
         })
+        store.navBarStore.showFilter = false
     }
 
     const applyFilter = () => {
@@ -75,7 +77,12 @@ const FilterForm: React.FC<IProps> = observer(() => {
     }
     return (
         <form className={classes.root} autoComplete="off">
-            <FormControl className={classNames(classes.filterRow, classes.margin)}>
+            <FormControl className={classes.filterRow}>
+                <Typography variant="h5" component="h2">
+                    Set up a filter to find what you are looking for easily
+                </Typography>
+            </FormControl>
+            <FormControl className={classes.filterRow}>
                 <InputLabel>Category</InputLabel>
                 <NativeSelect
                     value={state.category}
@@ -85,8 +92,7 @@ const FilterForm: React.FC<IProps> = observer(() => {
                     {renderList(CATEGORIES)}
                 </NativeSelect>
             </FormControl>
-            <Divider />
-            <FormControl className={classNames(classes.filterRow, classes.margin)}>
+            <FormControl className={classes.filterRow}>
                 <InputLabel>Thematics General</InputLabel>
                 <NativeSelect
                     value={state.thematicsGeneral}
@@ -96,9 +102,8 @@ const FilterForm: React.FC<IProps> = observer(() => {
                     {renderList(GENERAL_THEMATICS)}
                 </NativeSelect>
             </FormControl>
-            <Divider />
             <FormControl
-                className={classNames(classes.filterRow, classes.margin)}
+                className={classes.filterRow}
                 disabled={state.thematicsGeneral === 'all'}
             >
                 <InputLabel>Thematics Narrow</InputLabel>
@@ -113,16 +118,27 @@ const FilterForm: React.FC<IProps> = observer(() => {
                     First select general category
                 </FormHelperText>
             </FormControl>
-            <Divider />
-            <FormControl className={classNames(classes.filterRow, classes.margin, classes.filterRowCenter)}>
-                <Button onClick={applyFilter}>
-                    Apply Filter
-                </Button>
+            <FormControl className={classNames(classes.filterRow)}>
+               <div className={classes.sliderContainer}>
+               <PriceSlider
+                    className={classes.priceSlider}
+                    valueLabelDisplay="on"
+                    valueLabelFormat={valuetext}
+                    max={store.filterStore.maxPrice}
+                    onChangeCommitted={handlePriceSliderChange}
+                    defaultValue={[0, store.filterStore.maxPrice]}
+                />
+               </div>
+                
+                <FormHelperText>
+                    set the price range
+                </FormHelperText>
             </FormControl>
-            <FormControl className={classNames(classes.filterRow, classes.margin, classes.filterRowCenter)}>
-                <Button onClick={clearFilter}>
-                    Clear Filter
-                </Button>
+            <FormControl className={classNames(classes.filterRow, classes.filterRowCenter)}>
+                <div className={classes.buttonContainer}>
+                    <Button color='primary' onClick={applyFilter}>Go <DoubleArrowIcon /></Button>
+                    <Button color='secondary' onClick={clearFilter}>Clear <HighlightOffIcon /></Button>
+                </div>
             </FormControl>
         </form>
     );

@@ -1,7 +1,8 @@
 import { createStyles, makeStyles, withStyles, Theme } from '@material-ui/core/styles';
 
 import {
-    InputBase
+    InputBase,
+    Slider,
 } from '@material-ui/core';
 
 export const BootstrapInput = withStyles((theme: Theme) =>
@@ -21,41 +22,84 @@ export const BootstrapInput = withStyles((theme: Theme) =>
             transition: theme.transitions.create(['border-color', 'box-shadow']),
             '&:focus': {
                 borderRadius: 4,
-                borderColor: '#80bdff',
-                boxShadow: '0 0 0 0.2rem rgba(0,123,255,.25)',
+                borderColor: 'rgba(208, 20, 20, .25)',
+                boxShadow: '0 0 0 0.2rem rgba(208, 20, 20, .25)',
             },
-        },
-    }),
+            '&:disabled': {
+                backgroundColor: 'rgba(0, 0, 0, .15)',
+                'label': {
+                    marginTop: theme.spacing(3),
+                },
+            }
+        }
+    })
 )(InputBase);
 
+export const PriceSlider = withStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            color: '#9a1700',
+            height: 8,
+            width: '85%'
+        },
+        thumb: {
+            height: 24,
+            width: 24,
+            backgroundColor: '#fff',
+            border: '2px solid currentColor',
+            marginTop: -8,
+            marginLeft: -12,
+            '&:focus,&:hover,&$active': {
+                boxShadow: 'inherit',
+            },
+        },
+        active: {},
+        valueLabel: {
+            left: 'calc(-50% + 4px)',
+        },
+        track: {
+            height: 8,
+            borderRadius: 4,
+            marginRight: '1000px'
+        },
+        rail: {
+            height: 8,
+            borderRadius: 4,
+            
+        }
+    }),
+)(Slider);
 
 export const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             display: 'flex',
             flexWrap: 'wrap',
-        },
-        margin: {
-            margin: theme.spacing(1),
+            flexDirection: 'column'
         },
         filterRow: {
-            width: '18vw',
-            marginLeft: '1vw',
-            marginBottom: '15px'
+            flexGrow: 1,
+            marginLeft: theme.spacing(1),
+            marginRight: theme.spacing(1),
+            marginBottom: theme.spacing(2),
         },
         filterRowCenter: {
             alignContent: 'center'
         },
         divider: {
-            marginTop: '5px',
-            marginBottom: '5px'
+            marginTop: theme.spacing(1),
+            marginBottom: theme.spacing(1),
         },
-        option: {
-            borderRadius: 4,
-            backgroundColor: theme.palette.background.paper,
-            border: '1px solid #ced4da',
-            fontSize: 16,
-            transition: theme.transitions.create(['border-color', 'box-shadow']),
+        priceSlider: {
+            marginTop: theme.spacing(3),
+            marginLeft: theme.spacing(3),
+        },
+        buttonContainer: {
+            display: 'flex',
+            justifyContent: 'space-around'
+        },
+        sliderContainer: {
+            flexGrow: 0
         }
     }),
 );

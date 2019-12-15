@@ -2,6 +2,7 @@
 interface IDictionary {
     [key: string] : string[]
 }
+
 export const CATEGORIES: string[] = ['all', 'stickers', 'toys', 'T-shirt', 'accessories']
 export const GENERAL_THEMATICS: string[] = ['all', 'anime', 'music bands', 'movies']
 const ANIME_LIST = ['all','boruto', 'naruto']
