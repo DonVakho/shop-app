@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     IconButton,
     Card,
@@ -6,7 +6,10 @@ import {
     CardActions,
     CardContent,
     CardMedia,
-    Typography
+    Typography,
+    Collapse,
+    Paper,
+    Hidden
 } from '@material-ui/core';
 
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
@@ -17,22 +20,53 @@ import cardImage from '../../assets/tempImages/alchemist.jpg'
 import { useStyles } from './Styles'
 
 const ItemCard: React.FC = () => {
-    const classes = useStyles();
+    const classes = useStyles()
+    const [checked, setChecked] = useState(false);
+
+    const handleClick = () => {
+    }
+
+    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        setChecked(true);
+    };
+
+    const handlePopoverClose = () => {
+        setChecked(false);
+    };
 
     return (
-        <Card className={classes.card}>
-            <CardActionArea onClick={()=>{console.log('click')}}>
+        <div className={classes.root}>
+            <Card className={classes.card}
+                onMouseOver={handlePopoverOpen}
+                onMouseLeave={handlePopoverClose}>
                 <CardMedia component="img" image={cardImage} />
-                <CardContent>
-                    <Typography variant="h5" > Fulmetal Alchemist </Typography>
-                    <Typography variant="h6" > 15₾ </Typography>
-                </CardContent>
-            </CardActionArea>
-            <CardActions>
-                <IconButton color="primary"><AddShoppingCartIcon /></IconButton>
-                <IconButton color="primary"><InfoOutlinedIcon /></IconButton>
-            </CardActions>
-        </Card>
+                <CardActionArea onClick={handleClick}>
+                    <CardContent>
+                        <Typography variant="h6" > Fulmetal Alchemist </Typography>
+                        <Typography variant="h6" > 15₾ </Typography>
+                    </CardContent>
+                </CardActionArea>
+                <Hidden lgUp>
+                    <CardActions className={classes.buttonContainer}>
+                        <IconButton><AddShoppingCartIcon /></IconButton>
+                        <IconButton><InfoOutlinedIcon /></IconButton>
+                    </CardActions>
+                </Hidden>
+            </Card>
+            <Hidden mdDown>
+                <div
+                    style={{ position: 'absolute' }}
+                    onMouseOver={handlePopoverOpen}
+                    onMouseLeave={handlePopoverClose}>
+                    <Collapse in={checked}>
+                        <Paper elevation={0} className={classes.popoVerContainer}>
+                            <IconButton><AddShoppingCartIcon /></IconButton>
+                            <IconButton><InfoOutlinedIcon /></IconButton>
+                        </Paper>
+                    </Collapse>
+                </div>
+            </Hidden>
+        </div>
     );
 }
 
