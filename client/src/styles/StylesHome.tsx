@@ -1,8 +1,8 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-
 import {
-
-} from '@material-ui/core';
+    createStyles,
+    makeStyles,
+    Theme
+} from '@material-ui/core/styles';
 
 export const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,11 +36,13 @@ export const useStyles = makeStyles((theme: Theme) =>
         kunaiFab: {
             width: '55px',
             height: '55px',
-            backgroundColor:  theme.palette.background.paper,
+            backgroundColor: theme.palette.background.paper,
             border: '1px solid #000000',
         },
         popoVerContainer: {
-            margin: theme.spacing(1),
+            margin: theme.spacing(2),
+            position: 'absolute'
+
         }
     }),
 );

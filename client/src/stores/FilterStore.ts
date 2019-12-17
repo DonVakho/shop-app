@@ -5,9 +5,11 @@ import { IFilterProps } from '../Interfaces'
 
 export default class FilterStore {
     rootStore: RootStore
+
     constructor(rootStore: RootStore) {
         this.rootStore = rootStore;
     }
+
     @observable
     maxPrice: number = 100
 

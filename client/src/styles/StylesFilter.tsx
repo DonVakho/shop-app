@@ -1,4 +1,9 @@
-import { createStyles, makeStyles, withStyles, Theme } from '@material-ui/core/styles';
+import {
+    createStyles,
+    makeStyles,
+    withStyles,
+    Theme
+} from '@material-ui/core/styles';
 
 import {
     InputBase,
@@ -65,7 +70,7 @@ export const PriceSlider = withStyles((theme: Theme) =>
         rail: {
             height: 8,
             borderRadius: 4,
-            
+
         }
     }),
 )(Slider);

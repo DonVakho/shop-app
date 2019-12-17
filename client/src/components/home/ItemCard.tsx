@@ -1,4 +1,8 @@
+//React Imports
 import React, { useState } from 'react';
+//Style Imports
+import { useStyles } from '../../styles/StylesHome'
+//Material-ui core Imports
 import {
     IconButton,
     Card,
@@ -11,13 +15,11 @@ import {
     Paper,
     Hidden
 } from '@material-ui/core';
-
+//Icon Imports
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
-
+import RemoveRedEyeOutlinedIcon from '@material-ui/icons/RemoveRedEyeOutlined';
+//Asset Imports
 import cardImage from '../../assets/tempImages/alchemist.jpg'
-
-import { useStyles } from './Styles'
 
 const ItemCard: React.FC = () => {
     const classes = useStyles()
@@ -49,19 +51,19 @@ const ItemCard: React.FC = () => {
                 <Hidden lgUp>
                     <CardActions className={classes.buttonContainer}>
                         <IconButton><AddShoppingCartIcon /></IconButton>
-                        <IconButton><InfoOutlinedIcon /></IconButton>
+                        <IconButton><RemoveRedEyeOutlinedIcon /></IconButton>
                     </CardActions>
                 </Hidden>
             </Card>
             <Hidden mdDown>
                 <div
-                    style={{ position: 'absolute' }}
+                    className={classes.popoVerContainer}
                     onMouseOver={handlePopoverOpen}
                     onMouseLeave={handlePopoverClose}>
                     <Collapse in={checked}>
-                        <Paper elevation={0} className={classes.popoVerContainer}>
+                        <Paper elevation={0} >
                             <IconButton><AddShoppingCartIcon /></IconButton>
-                            <IconButton><InfoOutlinedIcon /></IconButton>
+                            <IconButton><RemoveRedEyeOutlinedIcon /></IconButton>
                         </Paper>
                     </Collapse>
                 </div>

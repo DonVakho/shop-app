@@ -1,9 +1,14 @@
+//React Imports
 import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames'
-import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-
+//Style Imports
+import {
+    BootstrapInput,
+    useStyles,
+    PriceSlider
+} from '../../styles/StylesFilter'
+//Material-ui core Imports
 import {
     FormControl,
     InputLabel,
@@ -12,21 +17,17 @@ import {
     Button,
     Typography,
 } from '@material-ui/core';
-
-import {
-    BootstrapInput,
-    useStyles,
-    PriceSlider
-} from './Styles'
-
+//Icon Imports
+import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+//Reference data Imports
 import {
     CATEGORIES,
     GENERAL_THEMATICS,
     NARROW_THEMATICS,
-} from '../../RefData'
-
-import { RootStoreContext } from '../../../stores/RootStore'
-
+} from '../RefData'
+//Store Imports
+import { RootStoreContext } from '../../stores/RootStore'
 
 const FilterForm: React.FC = observer(() => {
 
@@ -122,17 +123,17 @@ const FilterForm: React.FC = observer(() => {
                 </FormHelperText>
             </FormControl>
             <FormControl className={classNames(classes.filterRow)}>
-               <div className={classes.sliderContainer}>
-               <PriceSlider
-                    className={classes.priceSlider}
-                    valueLabelDisplay="on"
-                    valueLabelFormat={valuetext}
-                    max={store.filterStore.maxPrice}
-                    onChangeCommitted={handlePriceSliderChange}
-                    defaultValue={[0, store.filterStore.maxPrice]}
-                />
-               </div>
-                
+                <div className={classes.sliderContainer}>
+                    <PriceSlider
+                        className={classes.priceSlider}
+                        valueLabelDisplay="on"
+                        valueLabelFormat={valuetext}
+                        max={store.filterStore.maxPrice}
+                        onChangeCommitted={handlePriceSliderChange}
+                        defaultValue={[0, store.filterStore.maxPrice]}
+                    />
+                </div>
+
                 <FormHelperText>
                     set the price range
                 </FormHelperText>

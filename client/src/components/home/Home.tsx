@@ -1,25 +1,25 @@
+//React Imports
 import React from 'react'
-
+//Style Imports
+import { useStyles } from '../../styles/StylesHome'
+//Material-ui core Imports
 import {
     useScrollTrigger,
     Fab,
     Zoom,
     Toolbar
 } from '@material-ui/core'
-
-import ScrollUpIcon from '../../assets/kunai.svg'
-
+//Icon Imports
+import ScrollUpIcon from '../../assets/icons/kunai.svg'
+//Custom Component Imports
 import NavBar from '../navbar/NavBar'
-import SideMenu from '../side-filter-pane/SideMenu'
+import SidePane from '../side-pane/SidePane'
 import ItemCard from './ItemCard'
-
-import {
-    useStyles,
-} from './Styles'
 
 export default function Home() {
     const classes = useStyles({} as any);
-    var list = Array.from(Array(20).keys())
+    var list = Array.from(Array(50).keys())
+
     const trigger = useScrollTrigger({
         disableHysteresis: true,
         threshold: 500,
@@ -42,7 +42,7 @@ export default function Home() {
             <div className={classes.itemsContainer}>
                 {list.map(num => <ItemCard key={num} />)}
             </div>
-            <SideMenu />
+            <SidePane />
             <Zoom in={trigger}>
                 <div onClick={handleClick} className={classes.scrollUpContainer}>
                     <Fab className={classes.kunaiFab}>
