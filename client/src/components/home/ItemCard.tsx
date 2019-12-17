@@ -39,12 +39,13 @@ const ItemCard: React.FC = () => {
     return (
         <div className={classes.root}>
             <Card className={classes.card}
+                square={true}
                 onMouseOver={handlePopoverOpen}
                 onMouseLeave={handlePopoverClose}>
                 <CardMedia component="img" image={cardImage} />
                 <CardActionArea onClick={handleClick}>
                     <CardContent>
-                        <Typography variant="h6" > Fulmetal Alchemist </Typography>
+                        <Typography variant='h6' noWrap={true}> Fulmetal Alchemist </Typography>
                         <Typography variant="h6" > 15₾ </Typography>
                     </CardContent>
                 </CardActionArea>
@@ -57,11 +58,11 @@ const ItemCard: React.FC = () => {
             </Card>
             <Hidden mdDown>
                 <div
-                    className={classes.popoVerContainer}
+                    className={classes.popoverContainer}
                     onMouseOver={handlePopoverOpen}
                     onMouseLeave={handlePopoverClose}>
                     <Collapse in={checked}>
-                        <Paper elevation={0} >
+                        <Paper square={true}>
                             <IconButton><AddShoppingCartIcon /></IconButton>
                             <IconButton><RemoveRedEyeOutlinedIcon /></IconButton>
                         </Paper>

@@ -70,5 +70,8 @@ export const useStyles = makeStyles((theme: Theme) =>
         display: 'none',
       },
     },
+    logoIcon: {
+      width: '230px',
+  },
   }),
 );

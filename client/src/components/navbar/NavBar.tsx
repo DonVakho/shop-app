@@ -9,16 +9,17 @@ import {
   AppBar,
   Toolbar,
   IconButton,
-  Typography,
   InputBase,
   Badge,
   MenuItem,
-  Menu
+  Menu,
+  Link
 } from '@material-ui/core'
 //Icon Imports
 import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined'
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 import FilterIcon from '../../assets/icons/filter_white.png'
+import ShopName from '../../assets/icons/shop_name.png'
 import SearchIcon from '@material-ui/icons/Search'
 import MoreIcon from '@material-ui/icons/MoreVert'
 //Store Imports
@@ -51,6 +52,8 @@ const NavBar: React.FC = observer(() => {
     setMobileMoreAnchorEl(null);
   };
 
+  const preventDefault = (event: React.SyntheticEvent) => event.preventDefault();
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -59,8 +62,8 @@ const NavBar: React.FC = observer(() => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Sign in</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Sign out</MenuItem>
+      <MenuItem onClick={handleMenuClose}>შესვლა</MenuItem>
+      <MenuItem onClick={handleMenuClose}>გამოსვლა</MenuItem>
     </Menu>
   );
 
@@ -78,19 +81,19 @@ const NavBar: React.FC = observer(() => {
             <ShoppingCartIcon />
           </Badge>
         </IconButton>
-        <p>Cart</p>
+        <p>კალათა</p>
       </MenuItem>
       <MenuItem>
         <IconButton color="inherit">
           <AssignmentOutlinedIcon />
         </IconButton>
-        <p>My orders</p>
+        <p>შეკვეთები</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton>
-          <Avatar name="Vakhtang Donadze" round={true} size="40" />
+          <Avatar name={store.navBarStore.userName} round={true} size="40" color={'#9e0b0f'} textSizeRatio={2.2} />
         </IconButton>
-        <p>Profile</p>
+        <p>პროფილი</p>
       </MenuItem>
     </Menu>
   );
@@ -108,13 +111,15 @@ const NavBar: React.FC = observer(() => {
             >
               <img src={FilterIcon} alt="filter" />
             </IconButton>
-            <Typography className={classes.title} variant="h6" noWrap> Otaku Shop </Typography>
+            <Link href='/' onClick={preventDefault}>
+              <img src={ShopName} alt="logo" className={classes.logoIcon} />
+            </Link>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
               </div>
               <InputBase
-                placeholder="Search…"
+                placeholder="მოძებნა..."
                 classes={{
                   root: classes.inputRoot,
                   input: classes.inputInput,
@@ -135,7 +140,7 @@ const NavBar: React.FC = observer(() => {
               </IconButton>
 
               <IconButton edge="end" color="inherit" onClick={handleProfileMenuOpen}>
-                <Avatar name="Vakhtang Donadze" round={true} size="40" />
+                <Avatar name={store.navBarStore.userName} round={true} size="40" color={'#9e0b0f'} textSizeRatio={2.2} />
               </IconButton>
             </div>
             <div className={classes.sectionMobile}>

@@ -39,10 +39,9 @@ export const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: theme.palette.background.paper,
             border: '1px solid #000000',
         },
-        popoVerContainer: {
+        popoverContainer: {
             margin: theme.spacing(2),
-            position: 'absolute'
-
-        }
+            position: 'absolute',
+        },
     }),
 );

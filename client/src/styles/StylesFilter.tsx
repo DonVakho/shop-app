@@ -80,7 +80,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         root: {
             display: 'flex',
             flexWrap: 'wrap',
-            flexDirection: 'column'
+            flexDirection: 'column',
         },
         filterRow: {
             flexGrow: 1,
@@ -88,26 +88,34 @@ export const useStyles = makeStyles((theme: Theme) =>
             marginRight: theme.spacing(1),
             marginBottom: theme.spacing(2),
         },
-        filterRowCenter: {
-            alignContent: 'center'
-        },
-        divider: {
-            marginTop: theme.spacing(1),
-            marginBottom: theme.spacing(1),
-        },
         priceSlider: {
-            marginTop: theme.spacing(3),
-            marginLeft: theme.spacing(3),
+            marginTop: theme.spacing(4),
         },
         buttonContainer: {
             display: 'flex',
             justifyContent: 'space-around'
         },
-        sliderContainer: {
-            flexGrow: 0
-        },
         rotatedIcon: {
             transform: 'rotate(180deg)'
+        },
+        goButton: {
+            color: 'green'
+        },
+        clearButton: {
+            color: '#9e0b0f'
+        },
+        cancelButton: {
+            color: 'black'
+        },
+        logoImg: {
+            maxWidth: '200px',
+        },
+        imageDiv: {
+            display: 'flex',
+            justifyContent: 'center'
+        },
+        divider: {
+            marginBottom: theme.spacing(2)
         }
     }),
 );

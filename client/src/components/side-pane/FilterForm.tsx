@@ -16,10 +16,12 @@ import {
     NativeSelect,
     Button,
     Typography,
+    Divider
 } from '@material-ui/core';
 //Icon Imports
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import ShopLogo from '../../assets/icons/shop_logo.png'
 //Reference data Imports
 import {
     CATEGORIES,
@@ -81,13 +83,16 @@ const FilterForm: React.FC = observer(() => {
     }
     return (
         <form className={classes.root} autoComplete="off">
+            <div className={classes.imageDiv}>
+                <img src={ShopLogo} className={classes.logoImg} alt="logo" />
+            </div>
+            <Divider className={classes.divider}/>
+            <Typography variant="h5" component="h2" align='center'> დააყენე ფილტრი </Typography>
             <FormControl className={classes.filterRow}>
-                <Typography variant="h5" component="h2">
-                    Set up a filter to find what you are looking for easily
-                </Typography>
+
             </FormControl>
             <FormControl className={classes.filterRow}>
-                <InputLabel>Category</InputLabel>
+                <InputLabel>კატეგორია</InputLabel>
                 <NativeSelect
                     value={state.category}
                     onChange={handleCategoryChange}
@@ -97,7 +102,7 @@ const FilterForm: React.FC = observer(() => {
                 </NativeSelect>
             </FormControl>
             <FormControl className={classes.filterRow}>
-                <InputLabel>Thematics General</InputLabel>
+                <InputLabel>ზოგადი თემატიკა</InputLabel>
                 <NativeSelect
                     value={state.thematicsGeneral}
                     onChange={handleGeneralThematicsChange}
@@ -110,7 +115,7 @@ const FilterForm: React.FC = observer(() => {
                 className={classes.filterRow}
                 disabled={state.thematicsGeneral === 'all'}
             >
-                <InputLabel>Thematics Narrow</InputLabel>
+                <InputLabel style={{marginTop: '5px'}}>თემატიკის დაკონკრეტება</InputLabel>
                 <NativeSelect
                     value={state.thematicsNarrow}
                     onChange={handleNarrowThematicsChange}
@@ -119,32 +124,33 @@ const FilterForm: React.FC = observer(() => {
                     {renderList(NARROW_THEMATICS[state.thematicsGeneral])}
                 </NativeSelect>
                 <FormHelperText style={{ display: state.thematicsGeneral === 'all' ? undefined : 'none' }}>
-                    First select general category
+                    აირჩიე ზოგადი თემატიკა
                 </FormHelperText>
             </FormControl>
             <FormControl className={classNames(classes.filterRow)}>
-                <div className={classes.sliderContainer}>
+                <div className={classes.imageDiv}>
                     <PriceSlider
                         className={classes.priceSlider}
                         valueLabelDisplay="on"
                         valueLabelFormat={valuetext}
                         max={store.filterStore.maxPrice}
-                        onChangeCommitted={handlePriceSliderChange}
+                        onChange={handlePriceSliderChange}
                         defaultValue={[0, store.filterStore.maxPrice]}
+                        value={state.price}
                     />
                 </div>
-
                 <FormHelperText>
-                    set the price range
+                    დააყენე ფასის საზღვრები
                 </FormHelperText>
             </FormControl>
-            <FormControl className={classNames(classes.filterRow, classes.filterRowCenter)}>
+            <FormControl className={classNames(classes.filterRow)}>
                 <div className={classes.buttonContainer}>
-                    <Button color='primary' onClick={applyFilter}>Go <DoubleArrowIcon /></Button>
-                    <Button color='secondary' onClick={clearFilter}>Clear <HighlightOffIcon /></Button>
-                    <Button color='secondary' onClick={closeFilter}>close <DoubleArrowIcon className={classes.rotatedIcon} /></Button>
+                    <Button className={classes.goButton} onClick={applyFilter}> გაფილტრვა <DoubleArrowIcon /></Button>
+                    <Button className={classes.clearButton} onClick={clearFilter}> გასუფთავება <HighlightOffIcon /></Button>
+                    <Button className={classes.cancelButton} onClick={closeFilter}>დახურვა <DoubleArrowIcon className={classes.rotatedIcon} /></Button>
                 </div>
             </FormControl>
+            <Divider className={classes.divider}/>
         </form>
     );
 })

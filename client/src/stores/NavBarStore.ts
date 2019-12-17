@@ -10,4 +10,7 @@ export default class NavBarStore {
 
     @observable
     showFilter: boolean = false
+
+    @observable
+    userName: string = 'Vakhtang Donadze'
 }
