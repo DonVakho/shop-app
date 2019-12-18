@@ -6,6 +6,8 @@ const ItemSchema = new Schema({
     description: String,
     price: Number,
     category: String,
+    thematics: String,
+    thematics_narrow: String,
     img: String
 });
 

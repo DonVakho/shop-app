@@ -18,10 +18,14 @@ import {
 //Icon Imports
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import RemoveRedEyeOutlinedIcon from '@material-ui/icons/RemoveRedEyeOutlined';
-//Asset Imports
-import cardImage from '../../assets/tempImages/alchemist.jpg'
+//Interface Imports
+import { IItemCard } from '../../Interfaces'
 
-const ItemCard: React.FC = () => {
+interface IProps {
+    item: IItemCard
+}
+
+const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
     const classes = useStyles()
     const [checked, setChecked] = useState(false);
 
@@ -42,11 +46,11 @@ const ItemCard: React.FC = () => {
                 square={true}
                 onMouseOver={handlePopoverOpen}
                 onMouseLeave={handlePopoverClose}>
-                <CardMedia component="img" image={cardImage} />
+                <CardMedia component="img" image={item.img} />
                 <CardActionArea onClick={handleClick}>
                     <CardContent>
-                        <Typography variant='h6' noWrap={true}> Fulmetal Alchemist </Typography>
-                        <Typography variant="h6" > 15₾ </Typography>
+                        <Typography variant='h6' noWrap={true}> {item.name} </Typography>
+                        <Typography variant="h6" > {item.price}₾ </Typography>
                     </CardContent>
                 </CardActionArea>
                 <Hidden lgUp>

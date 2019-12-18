@@ -25,6 +25,8 @@ const ItemType = new GraphQLObjectType({
         description: { type: GraphQLString },
         price: { type: GraphQLFloat },
         category: { type: GraphQLString },
+        thematics: { type: GraphQLString },
+        thematics_narrow: { type: GraphQLString },
         img: { type: GraphQLString }
     })
 });
@@ -55,7 +57,7 @@ const OrderType = new GraphQLObjectType({
         date: { type: GraphQLString },
         status: { type: GraphQLBoolean },
         user_id: { type: GraphQLString },
-        items_count: {type: new GraphQLList(GraphQLString)},
+        items_count: { type: new GraphQLList(GraphQLString) },
         user: {
             type: UserType,
             resolve(parent, _) {
@@ -147,29 +149,63 @@ const RootQuery = new GraphQLObjectType({
         items: {
             type: ItemsWithCountType,
             args: {
-                limit: { type: GraphQLInt, defaultValue: -1 },
+                limit: { type: new GraphQLNonNull(GraphQLInt) },
                 skip: { type: GraphQLInt, defaultValue: 0 },
-                sort_field: { type: GraphQLString, defaultValue: "name" },
-                sort_direction: { type: GraphQLInt, defaultValue: 1 }
+                sort_field: { type: GraphQLString, defaultValue: "price" },
+                sort_direction: { type: GraphQLInt, defaultValue: 1 },
+                category: { type: GraphQLString, defaultValue: "all" },
+                thematics: { type: GraphQLString, defaultValue: "all" },
+                thematics_narrow: { type: GraphQLString, defaultValue: "all" },
+                low_price: { type: GraphQLFloat, defaultValue: 0 },
+                high_price: { type: GraphQLFloat, defaultValue: 100 },
             },
             resolve(_, args) {
-                if (args.limit > 0) {
+                if (args.category == "all") {
                     return {
-                        count: Item.countDocuments({}),
-                        data: Item.find({})
+                        data: Item
+                            .find(
+                                args.thematics == "all" ? {}
+                                    : args.thematics_narrow == "all" ? { thematics: args.thematics }
+                                        : { thematics_narrow: args.thematics_narrow }
+                            )
+                            .where('price').gt(args.low_price).lt(args.high_price)
                             .sort({ sort_field: args.sort_direction })
                             .skip(args.skip)
-                            .limit(args.limit)
+                            .limit(args.limit),
+                        count: Item
+                            .find(
+                                args.thematics == "all" ? {}
+                                    : args.thematics_narrow == "all" ? { thematics: args.thematics }
+                                        : { thematics_narrow: args.thematics_narrow }
+                            )
+                            .where('price').gt(args.low_price).lt(args.high_price)
+                            .countDocuments({})
                     }
                 } else {
                     return {
-                        count: Item.countDocuments({}),
-                        data: Item.find({})
+                        data: Item
+                            .find(
+                                args.thematics == "all" ? { category: args.category }
+                                    : args.thematics_narrow == "all" ? { $and: [{ category: args.category }, { thematics: args.thematics }] }
+                                        : { $and: [{ category: args.category }, { thematics_narrow: args.thematics_narrow }] }
+                            )
+                            .where('price').gt(args.low_price).lt(args.high_price)
                             .sort({ sort_field: args.sort_direction })
+                            .skip(args.skip)
+                            .limit(args.limit),
+                        count: Item
+                            .find(
+                                args.thematics == "all" ? { category: args.category }
+                                    : args.thematics_narrow == "all" ? { $and: [{ category: args.category }, { thematics: args.thematics }] }
+                                        : { $and: [{ category: args.category }, { thematics_narrow: args.thematics_narrow }] }
+                            )
+                            .where('price').gt(args.low_price).lt(args.high_price)
+                            .countDocuments({})
                     }
                 }
+
             }
-        }
+        },
     }
 });
 
@@ -221,6 +257,8 @@ const Mutation = new GraphQLObjectType({
                 description: { type: new GraphQLNonNull(GraphQLString) },
                 price: { type: new GraphQLNonNull(GraphQLFloat) },
                 category: { type: new GraphQLNonNull(GraphQLString) },
+                thematics: { type: new GraphQLNonNull(GraphQLString) },
+                thematics_narrow: { type: new GraphQLNonNull(GraphQLString) },
                 img: { type: new GraphQLNonNull(GraphQLString) }
             },
             resolve(_, args) {
@@ -229,7 +267,9 @@ const Mutation = new GraphQLObjectType({
                     description: args.description,
                     price: args.price,
                     category: args.category,
-                    img: args.img
+                    thematics: args.thematics,
+                    thematics_narrow: args.thematics_narrow,
+                    img: "https://drive.google.com/uc?id=" + args.img
                 })
                 return item.save();
             }

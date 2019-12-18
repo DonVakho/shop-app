@@ -5,3 +5,9 @@ export interface IFilterProps {
     thematicsNarrow: string
     price: number[]
 }
+
+export interface IItemCard {
+    name: string,
+    price: number,
+    img: string
+}
