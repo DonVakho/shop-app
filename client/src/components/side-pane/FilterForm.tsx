@@ -167,11 +167,12 @@ const FilterForm: React.FC = observer(() => {
                 </FormControl>
                 <FormControl className={classNames(classes.filterRow)}>
                     <div className={classes.imageDiv}>
+                        {console.log(data)}
                         <PriceSlider
                             className={classes.priceSlider}
                             valueLabelDisplay="on"
                             valueLabelFormat={valuetext}
-                            max={store.filterStore.maxPrice}
+                            max={data.data.filter.high_price}
                             onChange={handlePriceSliderChange}
                             defaultValue={[0, store.filterStore.maxPrice]}
                             value={state.price}

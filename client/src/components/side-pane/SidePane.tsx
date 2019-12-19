@@ -12,9 +12,9 @@ import FilterForm from './FilterForm'
 
 const SidePane: React.FC = observer(() => {
     const store = useContext(RootStoreContext)
-    const [sidePaneSize, setSidePaneSize] = useState(window.innerWidth <= 991 ? '100vw' : window.innerWidth >= 1280 ? '21vw' : '35vw')
+    const [sidePaneSize, setSidePaneSize] = useState(window.innerWidth <= 991 ? '100vw' : '100%')
 
-    window.addEventListener("resize", () => { setSidePaneSize(window.innerWidth <= 991 ? '100vw' : window.innerWidth >= 1280 ? '21vw' : '35vw') });
+    window.addEventListener("resize", () => { setSidePaneSize(window.innerWidth <= 991 ? '100vw' : '100%') });
 
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (
