@@ -30,7 +30,7 @@ const SidePane: React.FC = observer(() => {
 
     return (
         <Drawer open={store.navBarStore.showFilter} onClose={toggleDrawer(false)}>
-            <div style={{ width: sidePaneSize }}>
+            <div style={{ width: sidePaneSize}}>
                 <FilterForm />
             </div>
         </Drawer>

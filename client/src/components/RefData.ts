@@ -1,16 +1,36 @@
 
-interface IDictionary {
-    [key: string]: string[]
-}
+import { IItemCard } from '../Interfaces'
 
-const ANIME_LIST = ['all', 'boruto', 'naruto']
-const BANDS_LIST = ['all', 'nirvana', 'placebo', 'pink floyd']
-const MOVIES_LIST = ['all', 'pulp fiction', 'interstelar', 'avengers']
-
-export const CATEGORIES: string[] = ['all', 'stickers', 'toys', 'T-shirt', 'accessories']
-export const GENERAL_THEMATICS: string[] = ['all', 'anime', 'music bands', 'movies']
-export const NARROW_THEMATICS: IDictionary = {
-    'anime': ANIME_LIST,
-    'music bands': BANDS_LIST,
-    'movies': MOVIES_LIST
-}
+export const items: IItemCard[] = [
+    { name: "nirvana", price: 5.3, img: "https://drive.google.com/uc?id=17581Nizb0jP6XMeay74DlJwFzLvpIcdl" },
+    { name: "rammstein", price: 2.1, img: "https://drive.google.com/uc?id=1lB_l7lE12gfiSQQaPx5w8xsxR7nwB0P1" },
+    { name: "led zeppelin", price: 5.3, img: "https://drive.google.com/uc?id=1hWQFl3dFBw_8YxhAzzTbwWViIMHJoljB" },
+    { name: "nirvana", price: 5.3, img: "https://drive.google.com/uc?id=17581Nizb0jP6XMeay74DlJwFzLvpIcdl" },
+    { name: "rammstein", price: 2.1, img: "https://drive.google.com/uc?id=1lB_l7lE12gfiSQQaPx5w8xsxR7nwB0P1" },
+    { name: "led zeppelin", price: 5.3, img: "https://drive.google.com/uc?id=1hWQFl3dFBw_8YxhAzzTbwWViIMHJoljB" },
+    { name: "nirvana", price: 5.3, img: "https://drive.google.com/uc?id=17581Nizb0jP6XMeay74DlJwFzLvpIcdl" },
+    { name: "rammstein", price: 2.1, img: "https://drive.google.com/uc?id=1lB_l7lE12gfiSQQaPx5w8xsxR7nwB0P1" },
+    { name: "led zeppelin", price: 5.3, img: "https://drive.google.com/uc?id=1hWQFl3dFBw_8YxhAzzTbwWViIMHJoljB" },
+    { name: "nirvana", price: 5.3, img: "https://drive.google.com/uc?id=17581Nizb0jP6XMeay74DlJwFzLvpIcdl" },
+    { name: "rammstein", price: 2.1, img: "https://drive.google.com/uc?id=1lB_l7lE12gfiSQQaPx5w8xsxR7nwB0P1" },
+    { name: "led zeppelin", price: 5.3, img: "https://drive.google.com/uc?id=1hWQFl3dFBw_8YxhAzzTbwWViIMHJoljB" },
+    { name: "nirvana", price: 5.3, img: "https://drive.google.com/uc?id=17581Nizb0jP6XMeay74DlJwFzLvpIcdl" },
+    { name: "rammstein", price: 2.1, img: "https://drive.google.com/uc?id=1lB_l7lE12gfiSQQaPx5w8xsxR7nwB0P1" },
+    { name: "led zeppelin", price: 5.3, img: "https://drive.google.com/uc?id=1hWQFl3dFBw_8YxhAzzTbwWViIMHJoljB" },
+    { name: "rammstein", price: 2.1, img: "https://drive.google.com/uc?id=1lB_l7lE12gfiSQQaPx5w8xsxR7nwB0P1" },
+    { name: "led zeppelin", price: 5.3, img: "https://drive.google.com/uc?id=1hWQFl3dFBw_8YxhAzzTbwWViIMHJoljB" },
+    { name: "nirvana", price: 5.3, img: "https://drive.google.com/uc?id=17581Nizb0jP6XMeay74DlJwFzLvpIcdl" },
+    { name: "rammstein", price: 2.1, img: "https://drive.google.com/uc?id=1lB_l7lE12gfiSQQaPx5w8xsxR7nwB0P1" },
+    { name: "led zeppelin", price: 5.3, img: "https://drive.google.com/uc?id=1hWQFl3dFBw_8YxhAzzTbwWViIMHJoljB" },
+    { name: "nirvana", price: 5.3, img: "https://drive.google.com/uc?id=17581Nizb0jP6XMeay74DlJwFzLvpIcdl" },
+    { name: "rammstein", price: 2.1, img: "https://drive.google.com/uc?id=1lB_l7lE12gfiSQQaPx5w8xsxR7nwB0P1" },
+    { name: "led zeppelin", price: 5.3, img: "https://drive.google.com/uc?id=1hWQFl3dFBw_8YxhAzzTbwWViIMHJoljB" },
+    { name: "rammstein", price: 2.1, img: "https://drive.google.com/uc?id=1lB_l7lE12gfiSQQaPx5w8xsxR7nwB0P1" },
+    { name: "led zeppelin", price: 5.3, img: "https://drive.google.com/uc?id=1hWQFl3dFBw_8YxhAzzTbwWViIMHJoljB" },
+    { name: "nirvana", price: 5.3, img: "https://drive.google.com/uc?id=17581Nizb0jP6XMeay74DlJwFzLvpIcdl" },
+    { name: "rammstein", price: 2.1, img: "https://drive.google.com/uc?id=1lB_l7lE12gfiSQQaPx5w8xsxR7nwB0P1" },
+    { name: "led zeppelin", price: 5.3, img: "https://drive.google.com/uc?id=1hWQFl3dFBw_8YxhAzzTbwWViIMHJoljB" },
+    { name: "nirvana", price: 5.3, img: "https://drive.google.com/uc?id=17581Nizb0jP6XMeay74DlJwFzLvpIcdl" },
+    { name: "rammstein", price: 2.1, img: "https://drive.google.com/uc?id=1lB_l7lE12gfiSQQaPx5w8xsxR7nwB0P1" },
+    { name: "led zeppelin", price: 5.3, img: "https://drive.google.com/uc?id=1hWQFl3dFBw_8YxhAzzTbwWViIMHJoljB" },
+]

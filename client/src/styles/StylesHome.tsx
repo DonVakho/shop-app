@@ -13,7 +13,7 @@ export const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'space-around',
-            margin: theme.spacing(5),
+            margin: theme.spacing(4),
         },
         card: {
             width: 250,

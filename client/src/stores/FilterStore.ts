@@ -15,17 +15,23 @@ export default class FilterStore {
 
     @observable
     filter: IFilterProps = {
-        category: 'all',
-        thematicsGeneral: 'all',
-        thematicsNarrow: 'all',
+        category: 'სხვადასხვა',
+        thematicsGeneral: 'სხვადასხვა',
+        thematicsNarrow: 'სხვადასხვა',
         price: [0, this.maxPrice]
     }
 
+    @observable
+    filterSet: boolean = false
+
+    @observable
+    doFilter: boolean = false
+    
     public clearStore = () => {
         this.filter = {
-            category: 'all',
-            thematicsGeneral: 'all',
-            thematicsNarrow: 'all',
+            category: 'სხვადასხვა',
+            thematicsGeneral: 'სხვადასხვა',
+            thematicsNarrow: 'სხვადასხვა',
             price: [0, this.maxPrice]
         }
     }

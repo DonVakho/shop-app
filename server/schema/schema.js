@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const User = require('../models/users')
 const Order = require('../models/orders')
 const Item = require('../models/items')
+const Filter = require('../models/filter_stats')
 
 mongoose.set('useFindAndModify', false);
 
@@ -15,7 +16,35 @@ const {
     GraphQLList,
     GraphQLFloat,
     GraphQLBoolean,
-    GraphQLInt } = graphql;
+    GraphQLInt, 
+    GraphQLInputObjectType } = graphql;
+
+const ThematicsNarrowInputType = new GraphQLInputObjectType({
+    name: 'ThematicsNarrowInput',
+    fields: ()=> ({
+        key: { type: GraphQLString },
+        values: { type: new GraphQLList(GraphQLString) },
+    })
+})
+
+const ThematicsNarrowType = new GraphQLObjectType({
+    name: 'ThematicsNarrow',
+    fields: ()=> ({
+        key: { type: GraphQLString },
+        values: { type: new GraphQLList(GraphQLString) },
+    })
+})
+
+const FilterType = new GraphQLObjectType({
+    name: 'Filter',
+    fields: () => ({
+        id: { type: GraphQLString },
+        categories: { type: new GraphQLList(GraphQLString) },
+        thematics: { type: new GraphQLList(GraphQLString) },
+        thematics_narrow: { type: new GraphQLList(ThematicsNarrowType) },
+        high_price: { type: GraphQLInt }
+    })
+})
 
 const ItemType = new GraphQLObjectType({
     name: 'Item',
@@ -92,6 +121,12 @@ const ItemsWithCountType = new GraphQLObjectType({
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
     fields: {
+        filter: {
+            type: FilterType,
+            resolve(_, __) {
+                return Filter.findOne({})
+            }
+        },
         user_with_id: {
             type: UserType,
             args: {
@@ -212,6 +247,44 @@ const RootQuery = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
+        //-------------------------------------------------------------------------------------------
+        //------------------------ Filter mutations ( add_filter, update_filter ) -----------------------
+        //-------------------------------------------------------------------------------------------
+        add_filter: {
+            type: FilterType,
+            args: {
+                categories: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+                thematics: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+                thematics_narrow: { type: new GraphQLNonNull(new GraphQLList(ThematicsNarrowInputType))},
+                high_price: { type: new GraphQLNonNull(GraphQLInt) },
+            },
+            resolve(_, args){
+                let filter = new Filter({
+                    categories: args.categories,
+                    thematics: args.thematics,
+                    thematics_narrow: args.thematics_narrow,
+                    high_price: args.high_price
+                })
+                return filter.save()
+            }
+        },
+        update_filter: {
+            type: FilterType,
+            args: {
+                categories: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+                thematics: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+                thematics_narrow: { type: new GraphQLNonNull(new GraphQLList(ThematicsNarrowInputType)) },
+                high_price: { type: new GraphQLNonNull(GraphQLInt) },
+            },
+            resolve(_, args) {
+                return Filter.findOneAndUpdate({}, {
+                    categories: args.categories,
+                    thematics: args.thematics,
+                    thematics_narrow: args.thematics_narrow,
+                    high_price: args.high_price
+                }, { new: true });
+            }
+        },
         //-------------------------------------------------------------------------------------------
         //------------------------ User mutations ( add_user, remove_user ) -------------------------
         //-------------------------------------------------------------------------------------------

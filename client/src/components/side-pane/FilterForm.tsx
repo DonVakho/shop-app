@@ -1,5 +1,6 @@
 //React Imports
 import React, { useContext, useState } from 'react';
+import { useAsync } from "react-async"
 import { observer } from 'mobx-react';
 import classNames from 'classnames'
 //Style Imports
@@ -16,36 +17,50 @@ import {
     NativeSelect,
     Button,
     Typography,
-    Divider
+    Divider,
+    CircularProgress
 } from '@material-ui/core';
 //Icon Imports
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import ShopLogo from '../../assets/icons/shop_logo.png'
-//Reference data Imports
-import {
-    CATEGORIES,
-    GENERAL_THEMATICS,
-    NARROW_THEMATICS,
-} from '../RefData'
+//Interfase imorts
+import { IThematicsNarrow } from '../../Interfaces'
 //Store Imports
 import { RootStoreContext } from '../../stores/RootStore'
+//Query imports
+import { GET_FILTER } from '../../Queries'
+
+const loadFilterData = async () => {
+    const res = await fetch(`http://localhost:5000/entrance?${GET_FILTER}`)
+    if (!res.ok) throw new Error(res.statusText)
+    return res.json()
+}
+
+const renderList = (list: string[] = []) => (
+    list.map(item =>
+        <option key={item} value={item}>
+            {item}
+        </option>
+    )
+)
+
+const renderList2 = (obj: IThematicsNarrow = { key: "სხვადასხვა", values: [] }) => (
+    obj.values.map((item: string) =>
+        <option key={item} value={item}>
+            {item}
+        </option>
+    )
+)
+
+const valuetext = (value: number) => (`${value}₾`)
 
 const FilterForm: React.FC = observer(() => {
 
     const classes = useStyles({} as any);
     const store = useContext(RootStoreContext)
     const [state, setState] = useState(store.filterStore.filter)
-
-    const renderList = (list: string[] = []) => (
-        list.map(item =>
-            <option key={item} value={item}>
-                {item}
-            </option>
-        )
-    )
-
-    const valuetext = (value: number) => (`${value}₾`)
+    const { data, error, isPending } = useAsync({ promiseFn: loadFilterData })
 
     const handleCategoryChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         setState({ ...state, category: (event.target.value as string) })
@@ -66,93 +81,118 @@ const FilterForm: React.FC = observer(() => {
 
     const clearFilter = () => {
         setState({
-            category: 'all',
-            thematicsGeneral: 'all',
-            thematicsNarrow: 'all',
-            price: [0, store.filterStore.maxPrice]
+            category: 'სხვადასხვა',
+            thematicsGeneral: 'სხვადასხვა',
+            thematicsNarrow: 'სხვადასხვა',
+            price: [0, data.data.filter.high_price]
         })
+        store.filterStore.filterSet = false
+        store.filterStore.doFilter = true
+        store.filterStore.filter = state
     }
 
     const applyFilter = () => {
         store.filterStore.filter = state
+        store.filterStore.filterSet = true
+        store.filterStore.doFilter = true
         store.navBarStore.showFilter = false
     }
 
     const closeFilter = () => {
+        store.filterStore.filter = state
         store.navBarStore.showFilter = false
     }
-    return (
-        <form className={classes.root} autoComplete="off">
-            <div className={classes.imageDiv}>
-                <img src={ShopLogo} className={classes.logoImg} alt="logo" />
-            </div>
-            <Divider className={classes.divider}/>
-            <Typography variant="h5" component="h2" align='center'> დააყენე ფილტრი </Typography>
-            <FormControl className={classes.filterRow}>
 
-            </FormControl>
-            <FormControl className={classes.filterRow}>
-                <InputLabel>კატეგორია</InputLabel>
-                <NativeSelect
-                    value={state.category}
-                    onChange={handleCategoryChange}
-                    input={<BootstrapInput name="category" />}
-                >
-                    {renderList(CATEGORIES)}
-                </NativeSelect>
-            </FormControl>
-            <FormControl className={classes.filterRow}>
-                <InputLabel>ზოგადი თემატიკა</InputLabel>
-                <NativeSelect
-                    value={state.thematicsGeneral}
-                    onChange={handleGeneralThematicsChange}
-                    input={<BootstrapInput name="thematics" />}
-                >
-                    {renderList(GENERAL_THEMATICS)}
-                </NativeSelect>
-            </FormControl>
-            <FormControl
-                className={classes.filterRow}
-                disabled={state.thematicsGeneral === 'all'}
-            >
-                <InputLabel style={{marginTop: '5px'}}>თემატიკის დაკონკრეტება</InputLabel>
-                <NativeSelect
-                    value={state.thematicsNarrow}
-                    onChange={handleNarrowThematicsChange}
-                    input={<BootstrapInput name="thematics-narrow" />}
-                >
-                    {renderList(NARROW_THEMATICS[state.thematicsGeneral])}
-                </NativeSelect>
-                <FormHelperText style={{ display: state.thematicsGeneral === 'all' ? undefined : 'none' }}>
-                    აირჩიე ზოგადი თემატიკა
-                </FormHelperText>
-            </FormControl>
-            <FormControl className={classNames(classes.filterRow)}>
+    if (isPending) {
+        return (
+            <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
+                <CircularProgress size="200px" />
+                <Typography variant='body1'>...loading data</Typography>
+            </div>
+        )
+    }
+    if (error) {
+        return (
+            <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
+                <Typography variant='body1'>{error.message}</Typography>
+            </div>
+        )
+    }
+    if (data) {
+        return (
+            <form className={classes.root} autoComplete="off">
                 <div className={classes.imageDiv}>
-                    <PriceSlider
-                        className={classes.priceSlider}
-                        valueLabelDisplay="on"
-                        valueLabelFormat={valuetext}
-                        max={store.filterStore.maxPrice}
-                        onChange={handlePriceSliderChange}
-                        defaultValue={[0, store.filterStore.maxPrice]}
-                        value={state.price}
-                    />
+                    <img src={ShopLogo} className={classes.logoImg} alt="logo" />
                 </div>
-                <FormHelperText>
-                    დააყენე ფასის საზღვრები
+                <Divider className={classes.divider} />
+                <Typography variant="h5" component="h2" align='center'> დააყენე ფილტრი </Typography>
+                <FormControl className={classes.filterRow}>
+
+                </FormControl>
+                <FormControl className={classes.filterRow}>
+                    <InputLabel>კატეგორია</InputLabel>
+                    <NativeSelect
+                        value={state.category}
+                        onChange={handleCategoryChange}
+                        input={<BootstrapInput name="category" />}
+                    >
+                        {renderList(data.data.filter.categories)}
+                    </NativeSelect>
+                </FormControl>
+                <FormControl className={classes.filterRow}>
+                    <InputLabel>ზოგადი თემატიკა</InputLabel>
+                    <NativeSelect
+                        value={state.thematicsGeneral}
+                        onChange={handleGeneralThematicsChange}
+                        input={<BootstrapInput name="thematics" />}
+                    >
+                        {renderList(data.data.filter.thematics)}
+                    </NativeSelect>
+                </FormControl>
+                <FormControl
+                    className={classes.filterRow}
+                    disabled={state.thematicsGeneral === 'სხვადასხვა'}
+                >
+                    <InputLabel style={{ marginTop: '5px' }}>თემატიკის დაკონკრეტება</InputLabel>
+                    <NativeSelect
+                        value={state.thematicsNarrow}
+                        onChange={handleNarrowThematicsChange}
+                        input={<BootstrapInput name="thematics-narrow" />}
+                    >
+                        {renderList2(data.data.filter.thematics_narrow.find((element: IThematicsNarrow) => element.key === state.thematicsGeneral))}
+                    </NativeSelect>
+                    <FormHelperText style={{ display: state.thematicsGeneral === 'სხვადასხვა' ? undefined : 'none' }}>
+                        აირჩიე ზოგადი თემატიკა
                 </FormHelperText>
-            </FormControl>
-            <FormControl className={classNames(classes.filterRow)}>
-                <div className={classes.buttonContainer}>
-                    <Button className={classes.goButton} onClick={applyFilter}> გაფილტრვა <DoubleArrowIcon /></Button>
-                    <Button className={classes.clearButton} onClick={clearFilter}> გასუფთავება <HighlightOffIcon /></Button>
-                    <Button className={classes.cancelButton} onClick={closeFilter}>დახურვა <DoubleArrowIcon className={classes.rotatedIcon} /></Button>
-                </div>
-            </FormControl>
-            <Divider className={classes.divider}/>
-        </form>
-    );
+                </FormControl>
+                <FormControl className={classNames(classes.filterRow)}>
+                    <div className={classes.imageDiv}>
+                        <PriceSlider
+                            className={classes.priceSlider}
+                            valueLabelDisplay="on"
+                            valueLabelFormat={valuetext}
+                            max={store.filterStore.maxPrice}
+                            onChange={handlePriceSliderChange}
+                            defaultValue={[0, store.filterStore.maxPrice]}
+                            value={state.price}
+                        />
+                    </div>
+                    <FormHelperText>
+                        დააყენე ფასის საზღვრები
+                </FormHelperText>
+                </FormControl>
+                <FormControl className={classNames(classes.filterRow)}>
+                    <div className={classes.buttonContainer}>
+                        <Button className={classes.goButton} onClick={applyFilter}> გაფილტრვა <DoubleArrowIcon /></Button>
+                        <Button className={classes.clearButton} onClick={clearFilter}> გასუფთავება <HighlightOffIcon /></Button>
+                        <Button className={classes.cancelButton} onClick={closeFilter}>დახურვა <DoubleArrowIcon className={classes.rotatedIcon} /></Button>
+                    </div>
+                </FormControl>
+                <Divider className={classes.divider} />
+            </form>
+        );
+    }
+    return null
 })
 
 export default FilterForm
