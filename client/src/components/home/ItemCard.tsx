@@ -13,7 +13,8 @@ import {
     Typography,
     Collapse,
     Paper,
-    Hidden
+    Hidden,
+    Divider
 } from '@material-ui/core';
 //Icon Imports
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
@@ -60,7 +61,7 @@ const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
                 <Hidden lgUp>
                     <CardActions className={classes.buttonContainer}>
                         <IconButton><AddShoppingCartIcon /></IconButton>
-                        <IconButton onClick={()=>setOpen(true)}><RemoveRedEyeOutlinedIcon /></IconButton>
+                        <IconButton onClick={() => setOpen(true)}><RemoveRedEyeOutlinedIcon /></IconButton>
                     </CardActions>
                 </Hidden>
             </Card>
@@ -70,14 +71,19 @@ const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
                     onMouseOver={handlePopoverOpen}
                     onMouseLeave={handlePopoverClose}>
                     <Collapse in={checked}>
-                        <Paper square={true}>
-                            <IconButton ><AddShoppingCartIcon /></IconButton>
-                            <IconButton onClick={()=>setOpen(true)}><RemoveRedEyeOutlinedIcon /></IconButton>
+                        <Paper elevation={0} square={true}>
+                            <IconButton>
+                                <AddShoppingCartIcon style={{ fontSize: 17 }} />
+                            </IconButton>
+                            <Divider />
+                            <IconButton onClick={() => setOpen(true)}>
+                                <RemoveRedEyeOutlinedIcon style={{ fontSize: 17 }} />
+                            </IconButton>
                         </Paper>
                     </Collapse>
                 </div>
             </Hidden>
-        <ItemOverlay open={open} setOpen={setOpen} item={item}/>
+            <ItemOverlay open={open} setOpen={setOpen} item={item} />
         </div>
     );
 }

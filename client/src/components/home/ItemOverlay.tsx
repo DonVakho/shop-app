@@ -5,22 +5,13 @@ import { useStyles } from '../../styles/StylesHome'
 import {
   Button,
   Dialog,
-  DialogProps,
-  DialogActions,
-  DialogContent,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  MenuItem,
-  Select,
-  Switch,
   Typography,
   ExpansionPanel,
   ExpansionPanelDetails,
-  ExpansionPanelSummary
+  ExpansionPanelSummary,
+  CssBaseline
 } from '@material-ui/core'
 
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ScrollUpIcon from '../../assets/icons/kunai.svg'
 
 //Interface Imports
@@ -45,43 +36,15 @@ export default function ItemOverlay({ open, setOpen, item }: IProps) {
   return (
     mobile ?
       <Dialog
-        fullWidth={true}
-        maxWidth={'lg'}
         open={open}
         onClose={handleClose}
       >
-        <DialogContent className={classes.dialogContentColumn}>
-          <img src={item.img} className={classes.dialogImgMobile} />
+        <div className={classes.dialogContentColumn}>
+          <img src={item.img} className={classes.dialogImgMobile} alt="item" />
           <form className={classes.dialogFormMobile} noValidate>
             <Typography gutterBottom variant="h5" component="h2" align='center'> {item.name} </Typography>
-            <ExpansionPanel>
-              <ExpansionPanelSummary expandIcon={<img src={ScrollUpIcon} className={classes.kunaiIconDown}/>} >
-                <Typography>აღწერა</Typography>  
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-                <Typography gutterBottom variant="body1" align='left'> {item.description} </Typography>
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-      :
-      <Dialog
-        maxWidth={'md'}
-        open={open}
-        onClose={handleClose}
-      >
-        <DialogContent className={classes.dialogContentRow}>
-          <img src={item.img} className={classes.dialogImg} />
-          <form className={classes.dialogForm} noValidate>
-            <Typography variant="h5" component="h2" align='center'> {item.name} </Typography>
-            <ExpansionPanel>
-              <ExpansionPanelSummary expandIcon={<img src={ScrollUpIcon} className={classes.kunaiIconDown}/>} >
+            <ExpansionPanel className={classes.expansionPanelMobile}>
+              <ExpansionPanelSummary expandIcon={<img src={ScrollUpIcon} className={classes.kunaiIconDown} alt="kunai-arrow" />} >
                 <Typography>აღწერა</Typography>
               </ExpansionPanelSummary>
               <ExpansionPanelDetails>
@@ -89,12 +52,31 @@ export default function ItemOverlay({ open, setOpen, item }: IProps) {
               </ExpansionPanelDetails>
             </ExpansionPanel>
           </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
+        </div>
+        <Button onClick={handleClose} color="primary"> Close </Button>
+      </Dialog>
+      :
+      <Dialog 
+        maxWidth={'md'}
+        open={open}
+        onClose={handleClose}
+      >
+        <div className={classes.dialogContentRow}>
+          <CssBaseline />
+          <img src={item.img} className={classes.dialogImg} alt="item" />
+          <form className={classes.dialogForm} noValidate>
+            <Typography variant="h5" component="h2" align='center'> {item.name} </Typography>
+            <ExpansionPanel className={classes.expansionPanel} elevation={1}>
+              <ExpansionPanelSummary expandIcon={<img src={ScrollUpIcon} className={classes.kunaiIconDown} alt="kunai-arrow" />} >
+                <Typography>აღწერა</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <Typography gutterBottom variant="body1" align='left'> {item.description}{item.description}{item.description}{item.description} </Typography>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+            <Button onClick={handleClose} color="primary">Close</Button>
+          </form>
+        </div>
       </Dialog>
   );
 }

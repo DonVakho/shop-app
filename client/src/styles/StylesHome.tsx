@@ -29,6 +29,10 @@ export const useStyles = makeStyles((theme: Theme) =>
             bottom: theme.spacing(2),
             right: theme.spacing(2),
         },
+        smallIcon: {
+            fontSize: '50',
+            color: 'green'
+        },
         kunaiIcon: {
             width: '30px',
             transform: 'rotate(-45deg)'
@@ -55,32 +59,33 @@ export const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            
+
         },
         dialogForm: {
             display: 'flex',
             flexGrow: 1,
             flexDirection: 'column',
-            width: '500px' 
+            width: '40vw'
         },
         dialogFormMobile: {
             display: 'flex',
-            flexDirection: 'column',
+            flexDirection: 'column'
         },
         dialogImg: {
             marginRight: theme.spacing(2),
-            width: '500px' 
+            width: '35vw',
+            maxHeight: '35vw'
         },
         dialogImgMobile: {
-            width: '500px',
+            width: '70vw',
+        },
+        expansionPanel: {
+            overflowY: 'auto',
+            maxHeight: '300px',
             marginRight: theme.spacing(2),
         },
-        formControl: {
-            marginTop: theme.spacing(2),
-            minWidth: 120,
-        },
-        formControlLabel: {
-            marginTop: theme.spacing(1),
-        },
+        expansionPanelMobile: {
+            maxWidth: '70vw'
+        }
     }),
 );
