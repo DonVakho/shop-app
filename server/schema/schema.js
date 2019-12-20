@@ -56,7 +56,8 @@ const ItemType = new GraphQLObjectType({
         category: { type: GraphQLString },
         thematics: { type: GraphQLString },
         thematics_narrow: { type: GraphQLString },
-        img: { type: GraphQLString }
+        img: { type: GraphQLString },
+        left: {type: GraphQLInt}
     })
 });
 
@@ -188,19 +189,19 @@ const RootQuery = new GraphQLObjectType({
                 skip: { type: GraphQLInt, defaultValue: 0 },
                 sort_field: { type: GraphQLString, defaultValue: "price" },
                 sort_direction: { type: GraphQLInt, defaultValue: 1 },
-                category: { type: GraphQLString, defaultValue: "all" },
-                thematics: { type: GraphQLString, defaultValue: "all" },
-                thematics_narrow: { type: GraphQLString, defaultValue: "all" },
+                category: { type: GraphQLString, defaultValue: "სხვადასხვა" },
+                thematics: { type: GraphQLString, defaultValue: "სხვადასხვა" },
+                thematics_narrow: { type: GraphQLString, defaultValue: "სხვადასხვა" },
                 low_price: { type: GraphQLFloat, defaultValue: 0 },
                 high_price: { type: GraphQLFloat, defaultValue: 100 },
             },
             resolve(_, args) {
-                if (args.category == "all") {
+                if (args.category == "სხვადასხვა") {
                     return {
                         data: Item
                             .find(
-                                args.thematics == "all" ? {}
-                                    : args.thematics_narrow == "all" ? { thematics: args.thematics }
+                                args.thematics == "სხვადასხვა" ? {}
+                                    : args.thematics_narrow == "სხვადასხვა" ? { thematics: args.thematics }
                                         : { thematics_narrow: args.thematics_narrow }
                             )
                             .where('price').gt(args.low_price).lt(args.high_price)
@@ -209,8 +210,8 @@ const RootQuery = new GraphQLObjectType({
                             .limit(args.limit),
                         count: Item
                             .find(
-                                args.thematics == "all" ? {}
-                                    : args.thematics_narrow == "all" ? { thematics: args.thematics }
+                                args.thematics == "სხვადასხვა" ? {}
+                                    : args.thematics_narrow == "სხვადასხვა" ? { thematics: args.thematics }
                                         : { thematics_narrow: args.thematics_narrow }
                             )
                             .where('price').gt(args.low_price).lt(args.high_price)
@@ -220,8 +221,8 @@ const RootQuery = new GraphQLObjectType({
                     return {
                         data: Item
                             .find(
-                                args.thematics == "all" ? { category: args.category }
-                                    : args.thematics_narrow == "all" ? { $and: [{ category: args.category }, { thematics: args.thematics }] }
+                                args.thematics == "სხვადასხვა" ? { category: args.category }
+                                    : args.thematics_narrow == "სხვადასხვა" ? { $and: [{ category: args.category }, { thematics: args.thematics }] }
                                         : { $and: [{ category: args.category }, { thematics_narrow: args.thematics_narrow }] }
                             )
                             .where('price').gt(args.low_price).lt(args.high_price)
@@ -230,8 +231,8 @@ const RootQuery = new GraphQLObjectType({
                             .limit(args.limit),
                         count: Item
                             .find(
-                                args.thematics == "all" ? { category: args.category }
-                                    : args.thematics_narrow == "all" ? { $and: [{ category: args.category }, { thematics: args.thematics }] }
+                                args.thematics == "სხვადასხვა" ? { category: args.category }
+                                    : args.thematics_narrow == "სხვადასხვა" ? { $and: [{ category: args.category }, { thematics: args.thematics }] }
                                         : { $and: [{ category: args.category }, { thematics_narrow: args.thematics_narrow }] }
                             )
                             .where('price').gt(args.low_price).lt(args.high_price)
@@ -332,7 +333,8 @@ const Mutation = new GraphQLObjectType({
                 category: { type: new GraphQLNonNull(GraphQLString) },
                 thematics: { type: new GraphQLNonNull(GraphQLString) },
                 thematics_narrow: { type: new GraphQLNonNull(GraphQLString) },
-                img: { type: new GraphQLNonNull(GraphQLString) }
+                img: { type: new GraphQLNonNull(GraphQLString) },
+                left: {type: new GraphQLNonNull(GraphQLInt)}
             },
             resolve(_, args) {
                 let item = new Item({
@@ -342,7 +344,8 @@ const Mutation = new GraphQLObjectType({
                     category: args.category,
                     thematics: args.thematics,
                     thematics_narrow: args.thematics_narrow,
-                    img: "https://drive.google.com/uc?id=" + args.img
+                    img: "https://drive.google.com/uc?id=" + args.img,
+                    left: args.left
                 })
                 return item.save();
             }
@@ -356,6 +359,18 @@ const Mutation = new GraphQLObjectType({
             resolve(_, args) {
                 return Item.findByIdAndUpdate(args.id, {
                     price: args.price
+                }, { new: true });
+            }
+        },
+        update_qnty: {
+            type: ItemType,
+            args: {
+                id: { type: new GraphQLNonNull(GraphQLString) },
+                qnty: { type: new GraphQLNonNull(GraphQLInt) }
+            },
+            resolve(_, args) {
+                return Item.findByIdAndUpdate(args.id, {
+                    left: args.qnty
                 }, { new: true });
             }
         },

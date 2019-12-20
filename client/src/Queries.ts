@@ -9,3 +9,17 @@ export const GET_FILTER: string = `query={
         high_price
     }
 }`
+
+export const GET_ITEMS: string = `query={
+    items(limit: 12){
+        count,
+        data{
+          id,
+          name,
+          description,
+          price,
+          img,
+          left
+        }
+    }
+}`

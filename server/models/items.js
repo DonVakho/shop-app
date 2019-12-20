@@ -8,7 +8,8 @@ const ItemSchema = new Schema({
     category: String,
     thematics: String,
     thematics_narrow: String,
-    img: String
+    img: String,
+    left: Number
 });
 
 module.exports = mongoose.model('Item', ItemSchema);

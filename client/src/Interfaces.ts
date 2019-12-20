@@ -18,8 +18,11 @@ export interface IFilterData {
     high_price: number
 }
 
-export interface IItemCard {
+export interface IItem {
+    id: string,
     name: string,
+    description: string,
     price: number,
-    img: string
+    img: string,
+    left: number
 }

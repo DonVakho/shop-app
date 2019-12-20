@@ -19,20 +19,23 @@ import {
 import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
 import RemoveRedEyeOutlinedIcon from '@material-ui/icons/RemoveRedEyeOutlined';
 //Interface Imports
-import { IItemCard } from '../../Interfaces'
+import { IItem } from '../../Interfaces'
+
+import ItemOverlay from './ItemOverlay'
 
 interface IProps {
-    item: IItemCard
+    item: IItem
 }
 
 const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
     const classes = useStyles()
     const [checked, setChecked] = useState(false);
+    const [open, setOpen] = useState(false)
 
     const handleClick = () => {
     }
 
-    const handlePopoverOpen = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    const handlePopoverOpen = () => {
         setChecked(true);
     };
 
@@ -44,6 +47,7 @@ const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
         <div className={classes.root}>
             <Card className={classes.card}
                 square={true}
+                elevation={0}
                 onMouseOver={handlePopoverOpen}
                 onMouseLeave={handlePopoverClose}>
                 <CardMedia component="img" image={item.img} />
@@ -56,7 +60,7 @@ const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
                 <Hidden lgUp>
                     <CardActions className={classes.buttonContainer}>
                         <IconButton><AddShoppingCartIcon /></IconButton>
-                        <IconButton><RemoveRedEyeOutlinedIcon /></IconButton>
+                        <IconButton onClick={()=>setOpen(true)}><RemoveRedEyeOutlinedIcon /></IconButton>
                     </CardActions>
                 </Hidden>
             </Card>
@@ -67,12 +71,13 @@ const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
                     onMouseLeave={handlePopoverClose}>
                     <Collapse in={checked}>
                         <Paper square={true}>
-                            <IconButton><AddShoppingCartIcon /></IconButton>
-                            <IconButton><RemoveRedEyeOutlinedIcon /></IconButton>
+                            <IconButton ><AddShoppingCartIcon /></IconButton>
+                            <IconButton onClick={()=>setOpen(true)}><RemoveRedEyeOutlinedIcon /></IconButton>
                         </Paper>
                     </Collapse>
                 </div>
             </Hidden>
+        <ItemOverlay open={open} setOpen={setOpen} item={item}/>
         </div>
     );
 }

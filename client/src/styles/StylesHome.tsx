@@ -33,6 +33,10 @@ export const useStyles = makeStyles((theme: Theme) =>
             width: '30px',
             transform: 'rotate(-45deg)'
         },
+        kunaiIconDown: {
+            width: '30px',
+            transform: 'rotate(135deg)'
+        },
         kunaiFab: {
             width: '55px',
             height: '55px',
@@ -42,6 +46,41 @@ export const useStyles = makeStyles((theme: Theme) =>
         popoverContainer: {
             margin: theme.spacing(2),
             position: 'absolute',
+        },
+        dialogContentRow: {
+            display: 'flex',
+            flexDirection: 'row',
+        },
+        dialogContentColumn: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            
+        },
+        dialogForm: {
+            display: 'flex',
+            flexGrow: 1,
+            flexDirection: 'column',
+            width: '500px' 
+        },
+        dialogFormMobile: {
+            display: 'flex',
+            flexDirection: 'column',
+        },
+        dialogImg: {
+            marginRight: theme.spacing(2),
+            width: '500px' 
+        },
+        dialogImgMobile: {
+            width: '500px',
+            marginRight: theme.spacing(2),
+        },
+        formControl: {
+            marginTop: theme.spacing(2),
+            minWidth: 120,
+        },
+        formControlLabel: {
+            marginTop: theme.spacing(1),
         },
     }),
 );
