@@ -9,7 +9,7 @@ import {
   ExpansionPanel,
   ExpansionPanelDetails,
   ExpansionPanelSummary,
-  CssBaseline
+  CssBaseline,
 } from '@material-ui/core'
 
 import ScrollUpIcon from '../../assets/icons/kunai.svg'
@@ -25,9 +25,9 @@ interface IProps {
 
 export default function ItemOverlay({ open, setOpen, item }: IProps) {
   const classes = useStyles();
-  const [mobile, setMobile] = useState(window.innerWidth <= 991 ? true : false)
+  const [mobile, setMobile] = useState(window.innerWidth <= window.innerHeight ? true : false)
 
-  window.addEventListener("resize", () => { setMobile(window.innerWidth <= 991 ? true : false) });
+  window.addEventListener("resize", () => { setMobile(window.innerWidth <= window.innerHeight ? true : false) });
 
   const handleClose = () => {
     setOpen(false);
@@ -36,8 +36,10 @@ export default function ItemOverlay({ open, setOpen, item }: IProps) {
   return (
     mobile ?
       <Dialog
+        maxWidth={'lg'}
         open={open}
         onClose={handleClose}
+        PaperProps={{square: true}}
       >
         <div className={classes.dialogContentColumn}>
           <img src={item.img} className={classes.dialogImgMobile} alt="item" />
@@ -56,10 +58,11 @@ export default function ItemOverlay({ open, setOpen, item }: IProps) {
         <Button onClick={handleClose} color="primary"> Close </Button>
       </Dialog>
       :
-      <Dialog 
+      <Dialog
         maxWidth={'md'}
         open={open}
         onClose={handleClose}
+        PaperProps={{square: true}}
       >
         <div className={classes.dialogContentRow}>
           <CssBaseline />

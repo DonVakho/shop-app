@@ -11,7 +11,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       flexGrow: 1,
     },
     appBar: {
-      backgroundColor: 'rgba(0,0,0,0.7)',
+      backgroundColor: 'rgba(0,0,0,0.9)',
       borderBottom: '1px solid #FFFFFF',
     },
     menuButton: {
@@ -60,13 +60,13 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     sectionDesktop: {
       display: 'none',
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.up('lg')]: {
         display: 'flex',
       },
     },
     sectionMobile: {
       display: 'flex',
-      [theme.breakpoints.up('md')]: {
+      [theme.breakpoints.up('lg')]: {
         display: 'none',
       },
     },

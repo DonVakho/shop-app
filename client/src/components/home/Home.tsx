@@ -72,7 +72,6 @@ const Home = observer(() => {
         const items: IItem[] = data.data.items.data
         return (
             <React.Fragment>
-                {console.log(items)}
                 <NavBar />
                 <Toolbar id="back-to-top-anchor" />
                 <div className={classes.itemsContainer}>

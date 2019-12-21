@@ -19,6 +19,10 @@ export const useStyles = makeStyles((theme: Theme) =>
             width: 250,
             margin: theme.spacing(2)
         },
+        cardMobile: {
+            width: '60vw',
+            margin: theme.spacing(2)
+        },
         buttonContainer: {
             display: 'flex',
             justifyContent: 'space-around',
@@ -40,6 +44,11 @@ export const useStyles = makeStyles((theme: Theme) =>
         kunaiIconDown: {
             width: '30px',
             transform: 'rotate(135deg)'
+        },
+        iconHover: {
+            '&:hover': {
+                backgroundColor: 'gray',
+            },
         },
         kunaiFab: {
             width: '55px',
@@ -77,7 +86,7 @@ export const useStyles = makeStyles((theme: Theme) =>
             maxHeight: '35vw'
         },
         dialogImgMobile: {
-            width: '70vw',
+            width: '80vw',
         },
         expansionPanel: {
             overflowY: 'auto',
