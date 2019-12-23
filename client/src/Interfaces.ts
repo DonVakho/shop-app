@@ -24,5 +24,6 @@ export interface IItem {
     description: string,
     price: number,
     img: string,
-    left: number
+    left: number,
+    category: string
 }

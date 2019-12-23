@@ -19,7 +19,8 @@ export const GET_ITEMS: string = `query={
           description,
           price,
           img,
-          left
+          left,
+          category
         }
     }
 }`

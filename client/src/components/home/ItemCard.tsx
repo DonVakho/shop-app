@@ -13,16 +13,14 @@ import {
     Typography,
     Collapse,
     Paper,
-    Hidden,
-    Divider
+    Button
 } from '@material-ui/core';
 //Icon Imports
-import AddShoppingCartIcon from '@material-ui/icons/AddShoppingCart';
-import RemoveRedEyeOutlinedIcon from '@material-ui/icons/RemoveRedEyeOutlined';
+import CartIcon from '../../assets/icons/cart.svg'
 //Interface Imports
 import { IItem } from '../../Interfaces'
 
-import ItemOverlay from './ItemOverlay'
+import ItemOverlay from './overlay/overlayBox'
 
 interface IProps {
     item: IItem
@@ -35,63 +33,42 @@ const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
     const [mobile, setMobile] = useState(window.innerWidth <= window.innerHeight ? true : false)
 
     window.addEventListener("resize", () => { setMobile(window.innerWidth <= window.innerHeight ? true : false) });
-
-    const handleClick = () => {
-    }
-
-    const handlePopoverOpen = () => {
-        setChecked(true);
-    };
-
-    const handlePopoverClose = () => {
-        setChecked(false);
-    };
-
     return (
         <div className={classes.root}>
             <Card className={mobile ? classes.cardMobile : classes.card}
                 square={true}
                 elevation={0}
-                onMouseOver={handlePopoverOpen}
-                onMouseLeave={handlePopoverClose}>
-                <CardMedia component="img" image={item.img} />
-                <CardActionArea onClick={handleClick}>
+                onMouseOver={() => setChecked(true)}
+                onMouseLeave={() => setChecked(false)}>
+                <CardMedia onClick={() => setOpen(true)} component="img" image={item.img} />
+                <CardActionArea onClick={() => setOpen(true)}>
                     <CardContent>
                         <Typography variant='h6' noWrap={true}> {item.name} </Typography>
                         <Typography variant="h6" > {item.price}₾ </Typography>
                     </CardContent>
                 </CardActionArea>
-                <Hidden lgUp>
-                    <CardActions className={classes.buttonContainer}>
-                        <IconButton><AddShoppingCartIcon /></IconButton>
-                        <IconButton onClick={() => setOpen(true)}><RemoveRedEyeOutlinedIcon /></IconButton>
-                    </CardActions>
-                </Hidden>
             </Card>
-            <Hidden mdDown>
+            {mobile ?
+                <CardActions onClick={() => setOpen(true)}>
+                    <IconButton >
+                        <img src={CartIcon} />
+                    </IconButton>
+                </CardActions> :
                 <div
                     className={classes.popoverContainer}
-                    onMouseOver={handlePopoverOpen}
-                    onMouseLeave={handlePopoverClose}>
+                    onMouseOver={() => setChecked(true)}
+                    onMouseLeave={() => setChecked(false)}>
                     <Collapse in={checked}>
-                        <Paper elevation={0} square={true}>
-                            <div className={classes.iconHover}>
-                                <IconButton>
-                                    <AddShoppingCartIcon style={{ fontSize: 17 }} />
-                                </IconButton>
-                            </div>
-                            <Divider />
-                            <div className={classes.iconHover}>
-                                <IconButton onClick={() => setOpen(true)}>
-                                    <RemoveRedEyeOutlinedIcon style={{ fontSize: 17 }} />
-                                </IconButton>
-                            </div>
+                        <Paper elevation={0} square={true} onClick={() => setOpen(true)} className={classes.popoverPaper}>
+                            <Button style={{ flexGrow: 1, borderRadius: 0, }}>
+                                <img src={CartIcon} />
+                            </Button>
                         </Paper>
                     </Collapse>
                 </div>
-            </Hidden>
+            }
             <ItemOverlay open={open} setOpen={setOpen} item={item} />
-        </div>
+        </div >
     );
 }
 

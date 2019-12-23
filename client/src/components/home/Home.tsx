@@ -18,7 +18,7 @@ import ScrollUpIcon from '../../assets/icons/kunai.svg'
 //Store Imports
 import { RootStoreContext } from '../../stores/RootStore'
 //Query imports
-import { GET_ITEMS } from '../../Queries'
+import { GET_ITEMS, GET_FILTER } from '../../Queries'
 //Interface Imports
 import { IItem } from '../../Interfaces'
 //Custom Component Imports
@@ -33,10 +33,17 @@ const loadHomeItems = async () => {
     return res.json()
 }
 
+const loadFilterData = async () => {
+    const res = await fetch(`http://localhost:5000/entrance?${GET_FILTER}`)
+    if (!res.ok) throw new Error(res.statusText)
+    return res.json()
+}
+
 const Home = observer(() => {
     const classes = useStyles({} as any);
     const store = useContext(RootStoreContext)
     const { data, error, isPending } = useAsync({ promiseFn: loadHomeItems })
+    const filterLoad =  useAsync({ promiseFn: loadFilterData })
 
     const trigger = useScrollTrigger({
         disableHysteresis: true,
@@ -70,6 +77,9 @@ const Home = observer(() => {
     }
     if (data) {
         const items: IItem[] = data.data.items.data
+        if(filterLoad.data){
+            store.filterStore.filterData = filterLoad.data.data.filter
+        }
         return (
             <React.Fragment>
                 <NavBar />

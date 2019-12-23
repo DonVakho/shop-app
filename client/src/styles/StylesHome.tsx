@@ -23,10 +23,6 @@ export const useStyles = makeStyles((theme: Theme) =>
             width: '60vw',
             margin: theme.spacing(2)
         },
-        buttonContainer: {
-            display: 'flex',
-            justifyContent: 'space-around',
-        },
         scrollUpContainer: {
             position: 'fixed',
             flexDirection: 'column',
@@ -45,11 +41,6 @@ export const useStyles = makeStyles((theme: Theme) =>
             width: '30px',
             transform: 'rotate(135deg)'
         },
-        iconHover: {
-            '&:hover': {
-                backgroundColor: 'gray',
-            },
-        },
         kunaiFab: {
             width: '55px',
             height: '55px',
@@ -59,6 +50,12 @@ export const useStyles = makeStyles((theme: Theme) =>
         popoverContainer: {
             margin: theme.spacing(2),
             position: 'absolute',
+            alignItems: 'center',
+            width: 250,
+        },
+        popoverPaper: {
+            display: 'flex',
+            justifyContent: 'center',
         },
         dialogContentRow: {
             display: 'flex',
@@ -72,7 +69,6 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
         dialogForm: {
             display: 'flex',
-            flexGrow: 1,
             flexDirection: 'column',
             width: '40vw'
         },
