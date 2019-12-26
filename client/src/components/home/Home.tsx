@@ -42,7 +42,7 @@ const loadFilterData = async () => {
 const Home = observer(() => {
     const classes = useStyles({} as any);
     const store = useContext(RootStoreContext)
-    const { data, error, isPending } = useAsync({ promiseFn: loadHomeItems })
+    const itemsLoad = useAsync({ promiseFn: loadHomeItems })
     const filterLoad =  useAsync({ promiseFn: loadFilterData })
 
     const trigger = useScrollTrigger({
@@ -60,7 +60,7 @@ const Home = observer(() => {
         }
     };
 
-    if (isPending) {
+    if (itemsLoad.isPending || filterLoad.isPending) {
         return (
             <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
                 <CircularProgress size="200px" />
@@ -68,15 +68,16 @@ const Home = observer(() => {
             </div>
         )
     }
-    if (error) {
+    if (itemsLoad.error || filterLoad.error) {
         return (
             <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
-                <Typography variant='body1'>{error.message}</Typography>
+                <Typography variant='body1'>Items load error: {itemsLoad.error ? itemsLoad.error.message: ""}</Typography>
+                <Typography variant='body1'>Filter data load error: {filterLoad.error ? filterLoad.error.message: ""}</Typography>
             </div>
         )
     }
-    if (data) {
-        const items: IItem[] = data.data.items.data
+    if (itemsLoad.data && filterLoad.data) {
+        const items: IItem[] = itemsLoad.data.data.items.data
         if(filterLoad.data){
             store.filterStore.filterData = filterLoad.data.data.filter
         }
@@ -86,7 +87,7 @@ const Home = observer(() => {
                 <Toolbar id="back-to-top-anchor" />
                 <div className={classes.itemsContainer}>
                     {store.filterStore.filterSet ?
-                        <Typography variant='h6' style={{ color: 'white' }}>
+                        <Typography variant='body1' style={{ color: 'black' }}>
                             მიმდინარე ფილტრი:
                         კატეგორია >> {store.filterStore.filter.category} |
                         ზოგადი თემატიკა >> {store.filterStore.filter.thematicsGeneral} |

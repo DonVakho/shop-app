@@ -51,7 +51,7 @@ const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
             {mobile ?
                 <CardActions onClick={() => setOpen(true)}>
                     <IconButton >
-                        <img src={CartIcon} />
+                        <img src={CartIcon} alt='cart'/>
                     </IconButton>
                 </CardActions> :
                 <div
@@ -61,7 +61,7 @@ const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
                     <Collapse in={checked}>
                         <Paper elevation={0} square={true} onClick={() => setOpen(true)} className={classes.popoverPaper}>
                             <Button style={{ flexGrow: 1, borderRadius: 0, }}>
-                                <img src={CartIcon} />
+                                <img src={CartIcon} alt='cart' />
                             </Button>
                         </Paper>
                     </Collapse>

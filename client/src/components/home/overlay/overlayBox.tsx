@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useStyles } from '../../../styles/StylesHome'
 
 import {
-  Button,
   Dialog,
   CssBaseline,
 } from '@material-ui/core'
@@ -39,13 +38,12 @@ export default function ItemOverlay({ open, setOpen, item }: IProps) {
       >
         <div className={classes.dialogContentColumn}>
           <img src={item.img} className={classes.dialogImgMobile} alt="item" />
-          <OverlayForm item={item} mobile={mobile} />
+          <OverlayForm item={item} mobile={mobile} setOpen={setOpen}/>
         </div>
-        <Button onClick={handleClose} color="primary"> Close </Button>
       </Dialog>
       :
       <Dialog
-        maxWidth={'md'}
+        maxWidth={'lg'}
         open={open}
         onClose={handleClose}
         PaperProps={{ square: true }}
@@ -53,7 +51,7 @@ export default function ItemOverlay({ open, setOpen, item }: IProps) {
         <div className={classes.dialogContentRow}>
           <CssBaseline />
           <img src={item.img} className={classes.dialogImg} alt="item" />
-          <OverlayForm item={item} mobile={mobile} />
+          <OverlayForm item={item} mobile={mobile} setOpen={setOpen} />
         </div>
       </Dialog>
   );

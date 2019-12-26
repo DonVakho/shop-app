@@ -1,7 +1,7 @@
 import { observable } from 'mobx'
 import { RootStore } from './RootStore'
 
-import { IFilterProps, IItem } from '../Interfaces'
+import { IFilterProps, IFilterData } from '../Interfaces'
 
 export default class FilterStore {
     rootStore: RootStore
@@ -26,10 +26,15 @@ export default class FilterStore {
 
     @observable
     doFilter: boolean = false
-    
+
     @observable
-    filterData: any = null
-    
+    filterData: IFilterData = {
+        categories: [],
+        thematics: [],
+        thematics_narrow: [],
+        high_price: 100
+    }
+
     public clearStore = () => {
         this.filter = {
             category: 'სხვადასხვა',

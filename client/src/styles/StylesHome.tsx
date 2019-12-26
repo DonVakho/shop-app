@@ -37,10 +37,6 @@ export const useStyles = makeStyles((theme: Theme) =>
             width: '30px',
             transform: 'rotate(-45deg)'
         },
-        kunaiIconDown: {
-            width: '30px',
-            transform: 'rotate(135deg)'
-        },
         kunaiFab: {
             width: '55px',
             height: '55px',
@@ -67,30 +63,14 @@ export const useStyles = makeStyles((theme: Theme) =>
             alignItems: 'center',
 
         },
-        dialogForm: {
-            display: 'flex',
-            flexDirection: 'column',
-            width: '40vw'
-        },
-        dialogFormMobile: {
-            display: 'flex',
-            flexDirection: 'column'
-        },
         dialogImg: {
             marginRight: theme.spacing(2),
             width: '35vw',
-            maxHeight: '35vw'
+            height: '35vw'
+
         },
         dialogImgMobile: {
             width: '80vw',
-        },
-        expansionPanel: {
-            overflowY: 'auto',
-            maxHeight: '300px',
-            marginRight: theme.spacing(2),
-        },
-        expansionPanelMobile: {
-            maxWidth: '70vw'
         }
-    }),
+    })
 );
