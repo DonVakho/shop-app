@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import { observer } from 'mobx-react';
 import { useStyles, BootstrapInput } from '../../../styles/StylesOverlayForm'
 import {
     Typography,
@@ -7,16 +8,17 @@ import {
     ExpansionPanelSummary,
     FormControl,
     InputLabel,
-    FormHelperText,
     NativeSelect,
     Button,
-    Divider
 } from '@material-ui/core'
 
-import { IItem } from '../../../Interfaces'
+import { IItem, IStock } from '../../../Interfaces'
 import { RootStoreContext } from '../../../stores/RootStore'
+
 import ScrollUpIcon from '../../../assets/icons/kunai.svg'
-import { observer } from 'mobx-react';
+
+import { GET_ITEM } from '../../../Queries'
+
 
 interface IProps {
     mobile: boolean,
@@ -24,10 +26,10 @@ interface IProps {
     item: IItem
 }
 
-const renderList = (list: string[] = []) => (
+const renderList = (list: IStock[] = []) => (
     list.map(item =>
-        <option key={item} value={item}>
-            {item}
+        <option key={item.option} value={item.option}>
+            {item.option}
         </option>
     )
 )
@@ -36,7 +38,19 @@ const OverlayForm: React.FC<IProps> = observer(({ item, mobile, setOpen }: IProp
     const classes = useStyles({} as any);
     const store = useContext(RootStoreContext)
     const [qnty, setQnty] = useState(0 as any);
-    const phones: string[] = ['iPhone 5', 'iPhone 6', 'iPhone 6s', 'iPhone 7', 'iPhone 7s', 'iPhone X', 'iPhone Xs',]
+    const [stockLoad, setStockLoad] = useState([] as IStock[])
+    useEffect(() => {
+        fetch(`http://localhost:5000/entrance?${GET_ITEM(item.id)}`)
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(res.statusText)
+                } else {
+                    return res.json()
+                }
+            })
+            .then(res => setStockLoad(res.data.item_with_id.stock))
+
+    }, [item.id])
 
     const categoryCase = () => (
         <FormControl className={classes.HalffilterRow}>
@@ -44,35 +58,36 @@ const OverlayForm: React.FC<IProps> = observer(({ item, mobile, setOpen }: IProp
             <NativeSelect
                 input={<BootstrapInput name="phone-model" />}
             >
-                {renderList(phones)}
+                {renderList(stockLoad)}
             </NativeSelect>
         </FormControl>
     )
 
     const handleClose = () => {
         setOpen(false);
-      };
+    };
 
-    const categorySticker = () => (
-        <>categorySticker</>
-    )
-    const categoryPoster = () => (
-        <>categoryPoster</>
-    )
-    const categoryAccessories = () => (
-        <>categoryAccessories</>
-    )
-    const categoryMug = () => (
-        <>categoryMug</>
-    )
-    const categoryShirt = () => (
-        <>categoryShirt</>
-    )
-    const categoryGiftBox = () => (
-        <>categoryGiftBox</>
-    )
+    // const categorySticker = () => (
+    //     <>categorySticker</>
+    // )
+    // const categoryPoster = () => (
+    //     <>categoryPoster</>
+    // )
+    // const categoryAccessories = () => (
+    //     <>categoryAccessories</>
+    // )
+    // const categoryMug = () => (
+    //     <>categoryMug</>
+    // )
+    // const categoryShirt = () => (
+    //     <>categoryShirt</>
+    // )
+    // const categoryGiftBox = () => (
+    //     <>categoryGiftBox</>
+    // )
     return (
         <form className={mobile ? classes.dialogFormMobile : classes.dialogForm}>
+            {console.log(stockLoad)}
             <Typography gutterBottom variant="h5" component="h2" align='center'> {item.name} {item.category}</Typography>
             <ExpansionPanel className={mobile ? classes.expansionPanelMobile : classes.expansionPanel}>
                 <ExpansionPanelSummary expandIcon={<img src={ScrollUpIcon} className={classes.kunaiIconDown} alt="kunai-arrow" />} >
@@ -86,7 +101,7 @@ const OverlayForm: React.FC<IProps> = observer(({ item, mobile, setOpen }: IProp
                 {categoryCase()}
                 <FormControl className={classes.HalffilterRow}>
                     <InputLabel>რაოდენობა</InputLabel>
-                    <BootstrapInput name="quantity" inputProps={{ type: 'number', min: 0, value: qnty }} onChange={(e)=>setQnty(e.target.value)}/>
+                    <BootstrapInput name="quantity" inputProps={{ type: 'number', min: 0, value: qnty }} onChange={(e) => setQnty(e.target.value)} />
                 </FormControl>
             </div>
             <Button onClick={handleClose} color="primary"> Close </Button>

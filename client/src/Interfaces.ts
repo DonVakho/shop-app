@@ -27,3 +27,8 @@ export interface IItem {
     left: number,
     category: string
 }
+
+export interface IStock {
+    option: string,
+    left: number
+}

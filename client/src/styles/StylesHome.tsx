@@ -65,8 +65,8 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
         dialogImg: {
             marginRight: theme.spacing(2),
-            width: '35vw',
-            height: '35vw'
+            width: '32vw',
+            height: '21.3vw'
 
         },
         dialogImgMobile: {

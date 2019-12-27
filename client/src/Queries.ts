@@ -19,8 +19,16 @@ export const GET_ITEMS: string = `query={
           description,
           price,
           img,
-          left,
           category
         }
     }
+}`
+
+export const GET_ITEM = (id: string): string => `query={
+    item_with_id(id: "${id}"){
+        stock{
+          option,
+          left
+        }
+      }
 }`

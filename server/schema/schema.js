@@ -16,12 +16,24 @@ const {
     GraphQLList,
     GraphQLFloat,
     GraphQLBoolean,
-    GraphQLInt, 
+    GraphQLInt,
     GraphQLInputObjectType } = graphql;
 
+
+
+/********************************************************************************************
+*********************************************************************************************
+                                   Object Schemas
+*********************************************************************************************
+********************************************************************************************/
+
+
+//-------------------------------------------------------------------------------------------
+//----------------------------------- Filter Schema -----------------------------------------
+//-------------------------------------------------------------------------------------------
 const ThematicsNarrowInputType = new GraphQLInputObjectType({
     name: 'ThematicsNarrowInput',
-    fields: ()=> ({
+    fields: () => ({
         key: { type: GraphQLString },
         values: { type: new GraphQLList(GraphQLString) },
     })
@@ -29,7 +41,7 @@ const ThematicsNarrowInputType = new GraphQLInputObjectType({
 
 const ThematicsNarrowType = new GraphQLObjectType({
     name: 'ThematicsNarrow',
-    fields: ()=> ({
+    fields: () => ({
         key: { type: GraphQLString },
         values: { type: new GraphQLList(GraphQLString) },
     })
@@ -46,6 +58,24 @@ const FilterType = new GraphQLObjectType({
     })
 })
 
+//-------------------------------------------------------------------------------------------
+//-----------------------------------Full Item Schema ---------------------------------------
+//-------------------------------------------------------------------------------------------
+const StockInput = new GraphQLInputObjectType({
+    name: 'StockInput',
+    fields: () => ({
+        option: { type: GraphQLString },
+        left: { type: GraphQLInt }
+    })
+})
+
+const StockType = new GraphQLObjectType({
+    name: 'Stock',
+    fields: () => ({
+        option: { type: GraphQLString },
+        left: { type: GraphQLInt }
+    })
+})
 const ItemType = new GraphQLObjectType({
     name: 'Item',
     fields: () => ({
@@ -57,11 +87,20 @@ const ItemType = new GraphQLObjectType({
         thematics: { type: GraphQLString },
         thematics_narrow: { type: GraphQLString },
         img: { type: GraphQLString },
-        left: {type: GraphQLInt}
+        stock: { type: new GraphQLList(StockType) }
     })
 });
 
-
+const ItemsWithCountType = new GraphQLObjectType({
+    name: 'ItemsWithCount',
+    fields: () => ({
+        count: { type: GraphQLInt },
+        data: { type: new GraphQLList(ItemType) }
+    })
+});
+//-------------------------------------------------------------------------------------------
+//-----------------------------------User Schema --------------------------------------------
+//-------------------------------------------------------------------------------------------
 const UserType = new GraphQLObjectType({
     name: 'User',
     fields: () => ({
@@ -79,6 +118,29 @@ const UserType = new GraphQLObjectType({
         }
     })
 });
+//-------------------------------------------------------------------------------------------
+//-----------------------------------Order Schema -------------------------------------------
+//-------------------------------------------------------------------------------------------
+const OrderItemInput = new GraphQLInputObjectType({
+    name: 'OrderItemInput',
+    fields: () => ({
+        item_id: { type: new GraphQLNonNull(GraphQLString) },
+        count: { type: new GraphQLNonNull(GraphQLInt) }
+    })
+})
+
+const OrderItemType = new GraphQLObjectType({
+    name: 'OrderItem',
+    fields: () => ({
+        item: {
+            type: ItemType,
+            resolve(parent, _) {
+                return Item.findById(parent.item_id)
+            }
+        },
+        count: { type: GraphQLInt }
+    })
+})
 
 const OrderType = new GraphQLObjectType({
     name: 'Order',
@@ -87,17 +149,11 @@ const OrderType = new GraphQLObjectType({
         date: { type: GraphQLString },
         status: { type: GraphQLBoolean },
         user_id: { type: GraphQLString },
-        items_count: { type: new GraphQLList(GraphQLString) },
+        items: { type: new GraphQLList(OrderItemType) },
         user: {
             type: UserType,
             resolve(parent, _) {
                 return User.findById(parent.user_id)
-            }
-        },
-        items: {
-            type: new GraphQLList(ItemType),
-            resolve(parent, _) {
-                return Item.find({ _id: { $in: parent.items_id } })
             }
         }
     })
@@ -111,16 +167,17 @@ const OrdersWithCountType = new GraphQLObjectType({
     })
 });
 
-const ItemsWithCountType = new GraphQLObjectType({
-    name: 'ItemsWithCount',
-    fields: () => ({
-        count: { type: GraphQLInt },
-        data: { type: new GraphQLList(ItemType) }
-    })
-});
+/********************************************************************************************
+*********************************************************************************************
+                                  Query Schema
+*********************************************************************************************
+********************************************************************************************/
 
 const RootQuery = new GraphQLObjectType({
     name: 'RootQueryType',
+    //-------------------------------------------------------------------------------------------
+    //----------------------------- Filter Queries [ filter ] -----------------------------------
+    //-------------------------------------------------------------------------------------------
     fields: {
         filter: {
             type: FilterType,
@@ -128,6 +185,9 @@ const RootQuery = new GraphQLObjectType({
                 return Filter.findOne({})
             }
         },
+        //-------------------------------------------------------------------------------------------
+        //------------------- user Queries [ user_with_id, user_with_password ] ---------------------
+        //-------------------------------------------------------------------------------------------
         user_with_id: {
             type: UserType,
             args: {
@@ -147,6 +207,9 @@ const RootQuery = new GraphQLObjectType({
                 return User.findOne({ $and: [{ geo_id: args.geo_id }, { password: args.password }] })
             }
         },
+        //-------------------------------------------------------------------------------------------
+        //--------------------------- order Queries [ order_with_id, orders ] -----------------------
+        //-------------------------------------------------------------------------------------------
         order_with_id: {
             type: OrderType,
             args: {
@@ -180,6 +243,16 @@ const RootQuery = new GraphQLObjectType({
                             .sort({ sort_field: args.sort_direction })
                     }
                 }
+            }
+        },
+        //-------------------------------------------------------------------------------------------
+        //-------------------------------- item Queries [ item_with_id, items ] ---------------------
+        //-------------------------------------------------------------------------------------------
+        item_with_id: {
+            type: ItemType,
+            args: {id: {type: new GraphQLNonNull(GraphQLString)}},
+            resolve(_, args){
+                return Item.findById(args.id)
             }
         },
         items: {
@@ -244,22 +317,26 @@ const RootQuery = new GraphQLObjectType({
         },
     }
 });
-
+/********************************************************************************************
+*********************************************************************************************
+                                  Mutation Schema
+*********************************************************************************************
+********************************************************************************************/
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
         //-------------------------------------------------------------------------------------------
-        //------------------------ Filter mutations ( add_filter, update_filter ) -----------------------
+        //------------------------ Filter mutations [ add_filter, update_filter ] -----------------------
         //-------------------------------------------------------------------------------------------
         add_filter: {
             type: FilterType,
             args: {
                 categories: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
                 thematics: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
-                thematics_narrow: { type: new GraphQLNonNull(new GraphQLList(ThematicsNarrowInputType))},
+                thematics_narrow: { type: new GraphQLNonNull(new GraphQLList(ThematicsNarrowInputType)) },
                 high_price: { type: new GraphQLNonNull(GraphQLInt) },
             },
-            resolve(_, args){
+            resolve(_, args) {
                 let filter = new Filter({
                     categories: args.categories,
                     thematics: args.thematics,
@@ -287,7 +364,7 @@ const Mutation = new GraphQLObjectType({
             }
         },
         //-------------------------------------------------------------------------------------------
-        //------------------------ User mutations ( add_user, remove_user ) -------------------------
+        //------------------------ User mutations [] add_user, remove_user ] -------------------------
         //-------------------------------------------------------------------------------------------
         add_user: {
             type: UserType,
@@ -322,7 +399,7 @@ const Mutation = new GraphQLObjectType({
             }
         },
         //-------------------------------------------------------------------------------------------
-        //---------------------- Item mutations ( add_item, update_price, remove_item ) -------------
+        //---------------------- Item mutations [ add_item, update_price, remove_item ] -------------
         //-------------------------------------------------------------------------------------------
         add_item: {
             type: ItemType,
@@ -334,7 +411,7 @@ const Mutation = new GraphQLObjectType({
                 thematics: { type: new GraphQLNonNull(GraphQLString) },
                 thematics_narrow: { type: new GraphQLNonNull(GraphQLString) },
                 img: { type: new GraphQLNonNull(GraphQLString) },
-                left: {type: new GraphQLNonNull(GraphQLInt)}
+                stock: { type: new GraphQLNonNull(new GraphQLList(StockInput)) }
             },
             resolve(_, args) {
                 let item = new Item({
@@ -345,7 +422,7 @@ const Mutation = new GraphQLObjectType({
                     thematics: args.thematics,
                     thematics_narrow: args.thematics_narrow,
                     img: "https://drive.google.com/uc?id=" + args.img,
-                    left: args.left
+                    stock: args.stock
                 })
                 return item.save();
             }
@@ -387,24 +464,34 @@ const Mutation = new GraphQLObjectType({
             }
         },
         //-------------------------------------------------------------------------------------------
-        //------------------- Order mutations ( add_order, update_order, remove_order ) -------------
+        //------------------- Order mutations [ add_order, update_order, remove_order ] -------------
         //-------------------------------------------------------------------------------------------
         add_order: {
             type: OrderType,
             args: {
                 user_id: { type: new GraphQLNonNull(GraphQLString) },
-                items_id: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
-                items_count: { type: new GraphQLNonNull(new GraphQLList(GraphQLString)) },
+                items: { type: new GraphQLNonNull(new GraphQLList(OrderItemInput)) },
             },
             resolve(_, args) {
                 let order = new Order({
                     date: new Date().toLocaleString(),
                     status: args.status,
                     user_id: args.user_id,
-                    items_id: args.items_id,
-                    items_count: args.items_count
+                    items: args.items
                 })
                 return order.save();
+            }
+        },
+        remove_order: {
+            type: OrderType,
+            args: { id: { type: new GraphQLNonNull(GraphQLString) } },
+            resolve(_, args) {
+                const removedOrder = Order.findByIdAndRemove(args.id).exec();
+                if (removedOrder) {
+                    return removedItem;
+                } else {
+                    console.log(`Couldn't find order with id: ${args.id}`)
+                }
             }
         },
     }

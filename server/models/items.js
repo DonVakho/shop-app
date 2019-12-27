@@ -9,7 +9,10 @@ const ItemSchema = new Schema({
     thematics: String,
     thematics_narrow: String,
     img: String,
-    left: Number
+    stock: [{
+        option: String,
+        left: Number
+    }]
 });
 
 module.exports = mongoose.model('Item', ItemSchema);
