@@ -13,10 +13,11 @@ import {
     FormControl,
     InputLabel,
     FormHelperText,
-    NativeSelect,
+    Select,
     Button,
     Typography,
-    Divider
+    Divider,
+    MenuItem
 } from '@material-ui/core';
 //Icon Imports
 import DoubleArrowIcon from '@material-ui/icons/DoubleArrow';
@@ -29,17 +30,17 @@ import { RootStoreContext } from '../../stores/RootStore'
 
 const renderList = (list: string[] = []) => (
     list.map(item =>
-        <option key={item} value={item}>
+        <MenuItem key={item} value={item}>
             {item}
-        </option>
+        </MenuItem>
     )
 )
 
 const renderList2 = (obj: IThematicsNarrow = { key: "სხვადასხვა", values: [] }) => (
     obj.values.map((item: string) =>
-        <option key={item} value={item}>
+        <MenuItem key={item} value={item}>
             {item}
-        </option>
+        </MenuItem>
     )
 )
 
@@ -105,36 +106,36 @@ const FilterForm: React.FC = observer(() => {
             </FormControl>
             <FormControl className={classes.filterRow}>
                 <InputLabel>კატეგორია</InputLabel>
-                <NativeSelect
+                <Select
                     value={state.category}
                     onChange={handleCategoryChange}
                     input={<BootstrapInput name="category" />}
                 >
                     {renderList(filterData.categories)}
-                </NativeSelect>
+                </Select>
             </FormControl>
             <FormControl className={classes.filterRow}>
                 <InputLabel>ზოგადი თემატიკა</InputLabel>
-                <NativeSelect
+                <Select
                     value={state.thematicsGeneral}
                     onChange={handleGeneralThematicsChange}
                     input={<BootstrapInput name="thematics" />}
                 >
                     {renderList(filterData.thematics)}
-                </NativeSelect>
+                </Select>
             </FormControl>
             <FormControl
                 className={classes.filterRow}
                 disabled={state.thematicsGeneral === 'სხვადასხვა'}
             >
                 <InputLabel style={{ marginTop: '5px' }}>თემატიკის დაკონკრეტება</InputLabel>
-                <NativeSelect
+                <Select
                     value={state.thematicsNarrow}
                     onChange={handleNarrowThematicsChange}
                     input={<BootstrapInput name="thematics-narrow" />}
                 >
                     {renderList2(filterData.thematics_narrow.find((element: IThematicsNarrow) => element.key === state.thematicsGeneral))}
-                </NativeSelect>
+                </Select>
                 <FormHelperText style={{ display: state.thematicsGeneral === 'სხვადასხვა' ? undefined : 'none' }}>
                     აირჩიე ზოგადი თემატიკა
                 </FormHelperText>

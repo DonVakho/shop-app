@@ -3,6 +3,11 @@ export interface IThematicsNarrow {
     values: string[]
 }
 
+export interface IDescription {
+    key: string,
+    value: string
+}
+
 
 export interface IFilterProps {
     category: string
@@ -21,7 +26,7 @@ export interface IFilterData {
 export interface IItem {
     id: string,
     name: string,
-    description: string,
+    description: IDescription[],
     price: number,
     img: string,
     left: number,
@@ -31,4 +36,16 @@ export interface IItem {
 export interface IStock {
     option: string,
     left: number
+}
+
+export interface IOverlayFormState {
+    option: string,
+    left: number,
+    qnty: any
+}
+
+export interface ICartItem {
+    item: IItem,
+    option: string,
+    qnty: number
 }

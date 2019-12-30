@@ -61,6 +61,23 @@ const FilterType = new GraphQLObjectType({
 //-------------------------------------------------------------------------------------------
 //-----------------------------------Full Item Schema ---------------------------------------
 //-------------------------------------------------------------------------------------------
+
+const DescriptionInput = new GraphQLInputObjectType({
+    name: 'DescriptionInput',
+    fields: () => ({
+        key: { type: GraphQLString },
+        value: { type: GraphQLString }
+    })
+})
+
+const DescriptionType = new GraphQLObjectType({
+    name: 'Description',
+    fields: () => ({
+        key: { type: GraphQLString },
+        value: { type: GraphQLString }
+    })
+})
+
 const StockInput = new GraphQLInputObjectType({
     name: 'StockInput',
     fields: () => ({
@@ -81,7 +98,7 @@ const ItemType = new GraphQLObjectType({
     fields: () => ({
         id: { type: GraphQLString },
         name: { type: GraphQLString },
-        description: { type: GraphQLString },
+        description: { type: new GraphQLList(DescriptionType)  },
         price: { type: GraphQLFloat },
         category: { type: GraphQLString },
         thematics: { type: GraphQLString },
@@ -405,7 +422,7 @@ const Mutation = new GraphQLObjectType({
             type: ItemType,
             args: {
                 name: { type: new GraphQLNonNull(GraphQLString) },
-                description: { type: new GraphQLNonNull(GraphQLString) },
+                description: { type: new GraphQLNonNull(new GraphQLList(DescriptionInput)) },
                 price: { type: new GraphQLNonNull(GraphQLFloat) },
                 category: { type: new GraphQLNonNull(GraphQLString) },
                 thematics: { type: new GraphQLNonNull(GraphQLString) },

@@ -1,77 +1,63 @@
 import {
     createStyles,
     makeStyles,
-    withStyles,
-    Theme
+    Theme,
+
 } from '@material-ui/core/styles';
-
-import {
-    InputBase,
-} from '@material-ui/core';
-
-export const BootstrapInput = withStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            'label + &': {
-                marginTop: theme.spacing(3),
-            },
-        },
-        input: {
-            borderRadius: 4,
-            position: 'relative',
-            backgroundColor: theme.palette.background.paper,
-            border: '1px solid #ced4da',
-            fontSize: 16,
-            padding: '10px 26px 10px 12px',
-            transition: theme.transitions.create(['border-color', 'box-shadow']),
-            '&:focus': {
-                borderRadius: 4,
-                borderColor: 'rgba(208, 20, 20, .25)',
-                boxShadow: '0 0 0 0.2rem rgba(208, 20, 20, .25)',
-            },
-            '&:disabled': {
-                backgroundColor: 'rgba(0, 0, 0, .15)',
-                'label': {
-                    marginTop: theme.spacing(3),
-                },
-            }
-        }
-    })
-)(InputBase);
 
 export const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         dialogForm: {
             display: 'flex',
             flexDirection: 'column',
-            width: '40vw'
+            width: '40vw',
+            padding: theme.spacing(1),
         },
         dialogFormMobile: {
             display: 'flex',
-            flexDirection: 'column'
+            flexDirection: 'column',
+            padding: theme.spacing(1),
         },
         expansionPanel: {
             overflowY: 'auto',
-            maxHeight: '300px',
-            marginRight: theme.spacing(1),
+            maxHeight: '150px',
             marginBottom: theme.spacing(2),
         },
         expansionPanelMobile: {
-            maxWidth: '70vw',
-            marginRight: theme.spacing(1),
             marginBottom: theme.spacing(2),
         },
         kunaiIconDown: {
             width: '25px',
             transform: 'rotate(135deg)'
         },
-        divWithTwoSelects: {
+        rowWithMultipleElements: {
             display: 'flex',
         },
-        HalffilterRow: {
-            flex: 1,
+        collumnWithMultipleElements: {
+            display: 'flex',
+            flexDirection: 'column'
+        },
+        largeffilterRow: {
+            flex: 4,
             marginRight: theme.spacing(1),
             marginBottom: theme.spacing(2),
+            justifyContent: 'center',
+            alignContent: 'center'
         },
+        smallFilterRow: {
+            flex: 2,
+            marginRight: theme.spacing(1),
+            marginBottom: theme.spacing(2),
+            justifyContent: 'center'
+        },
+        buttonBuy: {
+            color: 'green'
+        },
+        buttonCart:{
+            color: 'blue'
+        },
+        buttonClose: {
+            color: 'black'
+        }
     }),
 );

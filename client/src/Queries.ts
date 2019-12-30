@@ -16,7 +16,10 @@ export const GET_ITEMS: string = `query={
         data{
           id,
           name,
-          description,
+          description{
+            key,
+            value
+          },
           price,
           img,
           category

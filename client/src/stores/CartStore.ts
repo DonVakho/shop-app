@@ -1,6 +1,8 @@
 import { observable } from 'mobx'
 import { RootStore } from './RootStore'
 
+import {ICartItem} from '../Interfaces'
+
 export default class CartStore {
     rootStore: RootStore
 
@@ -9,5 +11,8 @@ export default class CartStore {
     }
 
     @observable
-    itemCount: number = 0
+    cartItems: ICartItem[] = []
+    
+    @observable
+    itemCount: number = this.cartItems.length
 }

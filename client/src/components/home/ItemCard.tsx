@@ -28,20 +28,21 @@ interface IProps {
 
 const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
     const classes = useStyles()
-    const [checked, setChecked] = useState(false);
-    const [open, setOpen] = useState(false)
+    const [hover, setHover] = useState(false);
+    const [openOverlay, setOpenOverlay] = useState(false)
     const [mobile, setMobile] = useState(window.innerWidth <= window.innerHeight ? true : false)
 
     window.addEventListener("resize", () => { setMobile(window.innerWidth <= window.innerHeight ? true : false) });
+    
     return (
         <div className={classes.root}>
             <Card className={mobile ? classes.cardMobile : classes.card}
                 square={true}
                 elevation={0}
-                onMouseOver={() => setChecked(true)}
-                onMouseLeave={() => setChecked(false)}>
-                <CardMedia onClick={() => setOpen(true)} component="img" image={item.img} />
-                <CardActionArea onClick={() => setOpen(true)}>
+                onMouseOver={() => setHover(true)}
+                onMouseLeave={() => setHover(false)}>
+                <CardMedia onClick={() => setOpenOverlay(true)} component="img" image={item.img} />
+                <CardActionArea onClick={() => setOpenOverlay(true)}>
                     <CardContent>
                         <Typography variant='h6' noWrap={true}> {item.name} </Typography>
                         <Typography variant="h6" > {item.price}₾ </Typography>
@@ -49,17 +50,17 @@ const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
                 </CardActionArea>
             </Card>
             {mobile ?
-                <CardActions onClick={() => setOpen(true)}>
+                <CardActions onClick={() => setOpenOverlay(true)}>
                     <IconButton >
                         <img src={CartIcon} alt='cart'/>
                     </IconButton>
                 </CardActions> :
                 <div
                     className={classes.popoverContainer}
-                    onMouseOver={() => setChecked(true)}
-                    onMouseLeave={() => setChecked(false)}>
-                    <Collapse in={checked}>
-                        <Paper elevation={0} square={true} onClick={() => setOpen(true)} className={classes.popoverPaper}>
+                    onMouseOver={() => setHover(true)}
+                    onMouseLeave={() => setHover(false)}>
+                    <Collapse in={hover}>
+                        <Paper elevation={0} square={true} onClick={() => setOpenOverlay(true)} className={classes.popoverPaper}>
                             <Button style={{ flexGrow: 1, borderRadius: 0, }}>
                                 <img src={CartIcon} alt='cart' />
                             </Button>
@@ -67,7 +68,7 @@ const ItemCard: React.FC<IProps> = ({ item }: IProps) => {
                     </Collapse>
                 </div>
             }
-            <ItemOverlay open={open} setOpen={setOpen} item={item} />
+            <ItemOverlay open={openOverlay} setOpen={setOpenOverlay} item={item} />
         </div >
     );
 }

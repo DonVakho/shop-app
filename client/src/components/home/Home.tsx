@@ -4,6 +4,7 @@ import { observer } from 'mobx-react'
 import { useAsync } from "react-async"
 //Style Imports
 import { useStyles } from '../../styles/StylesHome'
+import './home.css';
 //Material-ui core Imports
 import {
     useScrollTrigger,
@@ -11,10 +12,10 @@ import {
     Zoom,
     Toolbar,
     Typography,
-    CircularProgress
 } from '@material-ui/core'
 //Icon Imports
 import ScrollUpIcon from '../../assets/icons/kunai.svg'
+import sharingan from '../../assets/images/Sharingan.png'
 //Store Imports
 import { RootStoreContext } from '../../stores/RootStore'
 //Query imports
@@ -43,7 +44,7 @@ const Home = observer(() => {
     const classes = useStyles({} as any);
     const store = useContext(RootStoreContext)
     const itemsLoad = useAsync({ promiseFn: loadHomeItems })
-    const filterLoad =  useAsync({ promiseFn: loadFilterData })
+    const filterLoad = useAsync({ promiseFn: loadFilterData })
 
     const trigger = useScrollTrigger({
         disableHysteresis: true,
@@ -62,23 +63,23 @@ const Home = observer(() => {
 
     if (itemsLoad.isPending || filterLoad.isPending) {
         return (
-            <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
-                <CircularProgress size="200px" />
-                <Typography variant='body1'>...loading data</Typography>
+            <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column', backgroundColor: 'black' }}>
+                <img src={sharingan} className="rotate" width="500px" alt='main-loading' />
+                <Typography variant='body1' style={{ color: 'white' }}>...loading data</Typography>
             </div>
         )
     }
     if (itemsLoad.error || filterLoad.error) {
         return (
             <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'space-around', flexDirection: 'column' }}>
-                <Typography variant='body1'>Items load error: {itemsLoad.error ? itemsLoad.error.message: ""}</Typography>
-                <Typography variant='body1'>Filter data load error: {filterLoad.error ? filterLoad.error.message: ""}</Typography>
+                {itemsLoad.error ? <Typography variant='body1'>Items load error: {itemsLoad.error.message}</Typography> : <></>}
+                {filterLoad.error ? <Typography variant='body1'>Filter load error: {filterLoad.error.message}</Typography> : <></>}
             </div>
         )
     }
     if (itemsLoad.data && filterLoad.data) {
         const items: IItem[] = itemsLoad.data.data.items.data
-        if(filterLoad.data){
+        if (filterLoad.data) {
             store.filterStore.filterData = filterLoad.data.data.filter
         }
         return (
