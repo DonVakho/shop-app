@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 //Style Imports
-import { useStyles } from '../../../styles/StylesHome'
+import { useStyles } from '../../../styles/StylesOverlayBox'
 
 import {
   Dialog,

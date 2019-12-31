@@ -41,11 +41,13 @@ export interface IStock {
 export interface IOverlayFormState {
     option: string,
     left: number,
-    qnty: any
+    qnty: any,
+    gender: string,
 }
 
 export interface ICartItem {
     item: IItem,
     option: string,
-    qnty: number
+    qnty: number,
+    gender: string,
 }

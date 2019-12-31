@@ -10,21 +10,27 @@ export const useStyles = makeStyles((theme: Theme) =>
         dialogForm: {
             display: 'flex',
             flexDirection: 'column',
+            justifyContent: 'space-around',
             width: '40vw',
             padding: theme.spacing(1),
         },
         dialogFormMobile: {
             display: 'flex',
+            width:  `calc(80vw - ${theme.spacing(2)}px)`,
             flexDirection: 'column',
-            padding: theme.spacing(1),
         },
         expansionPanel: {
             overflowY: 'auto',
             maxHeight: '150px',
+            marginRight: theme.spacing(1),
+            marginLeft: theme.spacing(1),
             marginBottom: theme.spacing(2),
         },
         expansionPanelMobile: {
+            marginRight: theme.spacing(1),
+            marginLeft: theme.spacing(1),
             marginBottom: theme.spacing(2),
+            
         },
         kunaiIconDown: {
             width: '25px',
@@ -33,22 +39,18 @@ export const useStyles = makeStyles((theme: Theme) =>
         rowWithMultipleElements: {
             display: 'flex',
         },
-        collumnWithMultipleElements: {
-            display: 'flex',
-            flexDirection: 'column'
-        },
         largeffilterRow: {
-            flex: 4,
+            flex: 1,
             marginRight: theme.spacing(1),
+            marginLeft: theme.spacing(1),
             marginBottom: theme.spacing(2),
-            justifyContent: 'center',
-            alignContent: 'center'
+           
         },
-        smallFilterRow: {
-            flex: 2,
-            marginRight: theme.spacing(1),
+        buttonForm: {
+            display:'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
             marginBottom: theme.spacing(2),
-            justifyContent: 'center'
         },
         buttonBuy: {
             color: 'green'

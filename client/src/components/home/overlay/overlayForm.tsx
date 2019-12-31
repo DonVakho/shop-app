@@ -10,7 +10,6 @@ import {
     FormHelperText,
     MenuItem,
     Button,
-    Chip,
     TextField,
     ButtonGroup
 } from '@material-ui/core'
@@ -52,7 +51,7 @@ const renderDescription = (list: IDescription[] = []) => (
 const OverlayForm: React.FC<IProps> = observer(({ item, mobile, setOpen }: IProps) => {
     const classes = useStyles({} as any);
     const store = useContext(RootStoreContext)
-    const [state, setState] = useState({} as IOverlayFormState)
+    const [state, setState] = useState({ option: '', qnty: 1, left: 1, gender: '' } as IOverlayFormState)
     const [stockLoad, setStockLoad] = useState([] as IStock[])
 
     useEffect(() => {
@@ -67,17 +66,40 @@ const OverlayForm: React.FC<IProps> = observer(({ item, mobile, setOpen }: IProp
             .then(res => {
                 setStockLoad(res.data.item_with_id.stock)
                 if (res.data.item_with_id.stock.length === 1 && (res.data.item_with_id.stock[0].option === '')) {
-                    setState((s) => {
-                        return {
-                            ...s,
-                            option: 'სტანდარტული',
-                            left: res.data.item_with_id.stock[0].left
-                        }
-                    })
+                    setState((oldState) => ({ ...oldState, option: 'სტანდარტული', left: res.data.item_with_id.stock[0].left }))
                 }
                 return res
             })
     }, [item.id])
+
+    const getError = (): boolean => {
+        return (state.qnty > state.left)
+            || (state.qnty < 1)
+            || (state.qnty != parseInt(state.qnty, 10))
+    }
+
+
+    const getHeleperTextInput = (): string => {
+        if (state.qnty != parseInt(state.qnty, 10)) {
+            return "შეიყვანეთ მთელი რიცხვი"
+        }
+        if (state.qnty < 1) {
+            return "მინიმალური რაოდენობა არის 1"
+        }
+        if (state.qnty > state.left) {
+            return `სამწუხაროდ დარჩენილია მხოლოდ  ${state.left}`
+        }
+        return state.option ? `დარჩენილია ${state.left}` : "აირჩიეთ მოდელი"
+    }
+
+
+    const getHeleperTextButtons = (): string => {
+        if (getError()) {
+            return "შეასწორეთ შეცდომები"
+        } else {
+            return state.option ? "" : "აირჩიეთ მოდელი"
+        }
+    }
 
     const renderModelOption = () => (
         state.option === 'სტანდარტული' ?
@@ -91,12 +113,31 @@ const OverlayForm: React.FC<IProps> = observer(({ item, mobile, setOpen }: IProp
                     label='მოდელი'
                     variant="outlined"
                     required
-                    select onChange={handleSelect}>
+                    value={state.option}
+                    select
+                    onChange={handleSelect}>
                     {renderList(stockLoad)}
                 </TextField>
             </FormControl>
     )
-
+    const rendeGender = () => (
+        <FormControl className={classes.largeffilterRow}>
+            <TextField
+                label='სქესი'
+                variant="outlined"
+                required
+                value={state.gender}
+                select
+                onChange={handleGender}>
+                <MenuItem key={'ბიჭი'} value={'ბიჭი'}>
+                    {'ბიჭი'}
+                </MenuItem>
+                <MenuItem key={'გოგო'} value={'გოგო'}>
+                    {'გოგო'}
+                </MenuItem>
+            </TextField>
+        </FormControl>
+    )
     const handleSelect = (event: React.ChangeEvent<{ value: unknown }>) => {
         const item = stockLoad.find((item: IStock) => item.option === event.target.value as string)
         if (item) {
@@ -104,12 +145,20 @@ const OverlayForm: React.FC<IProps> = observer(({ item, mobile, setOpen }: IProp
         }
     };
 
+    const handleGender = (event: React.ChangeEvent<{ value: unknown }>) => {
+            setState({ ...state, gender: event.target.value as string })
+    };
+
     const handleClose = () => {
         setOpen(false);
     };
 
+    const handleBuyNow = () => {
+        setOpen(false);
+    };
+
     const handleAddToCart = () => {
-        store.cartStore.cartItems.push({ item: item, option: state.option, qnty: state.qnty })
+        store.cartStore.cartItems.push({ item: item, option: state.option, qnty: state.qnty, gender: state.gender })
         store.cartStore.itemCount = store.cartStore.cartItems.length
     };
 
@@ -135,52 +184,51 @@ const OverlayForm: React.FC<IProps> = observer(({ item, mobile, setOpen }: IProp
 
             <div className={classes.rowWithMultipleElements}>
                 {renderModelOption()}
-                <FormControl className={classes.smallFilterRow}>
-                    <Chip label={`დარჩენილია: ${state.left ? state.left : ''}`} variant="outlined" color='primary' />
-                </FormControl>
-            </div>
-
-            <div className={mobile ? classes.collumnWithMultipleElements : classes.rowWithMultipleElements}>
-                <FormControl className={classes.smallFilterRow}>
+                {item.category === 'მაისურები' ? rendeGender():null}
+                <FormControl className={classes.largeffilterRow}>
                     <TextField
                         disabled={state.option ? false : true}
+                        required
+                        error={getError()}
+                        helperText={getHeleperTextInput()}
                         label='რაოდენობა'
                         variant="outlined"
                         name="quantity"
                         type='number'
-                        inputProps={{ min: 0, max: state.left }}
+                        value={state.qnty}
+                        inputProps={{ min: 1, max: state.left }}
                         onChange={(e) => setState({ ...state, qnty: e.target.value })} />
-                    <FormHelperText style={{ display: state.option ? 'none' : undefined }}>
-                        აირჩიე მოდელი
-                </FormHelperText>
-                </FormControl>
-                <FormControl className={classes.largeffilterRow}>
-                    <ButtonGroup disabled={state.option ? false : true}>
-                        <Button
-                            className={classes.buttonBuy}
-                            onClick={handleClose}
-                            startIcon={<AccountBalanceWalletIcon />}
-                            variant='outlined'>
-                            ყიდვა
-                         </Button>
-                        <Button className={classes.buttonCart}
-                            onClick={handleAddToCart}
-                            startIcon={<AddShoppingCartIcon />}
-                            variant='outlined'>
-                            კალათში დამატება
-                         </Button>
-                        <Button className={classes.buttonClose}
-                            onClick={handleClose}
-                            startIcon={<CloseIcon />}
-                            variant='outlined'>
-                            დახურვა
-                          </Button>
-                    </ButtonGroup>
-                    <FormHelperText style={{ display: state.option ? 'none' : undefined }}>
-                        აირჩიე მოდელი
-                </FormHelperText>
                 </FormControl>
             </div>
+            <FormControl className={classes.buttonForm} >
+                <ButtonGroup>
+                    <Button
+                        className={classes.buttonBuy}
+                        disabled={!getError() && state.option ? false : true}
+                        onClick={handleBuyNow}
+                        startIcon={<AccountBalanceWalletIcon />}
+                    >
+                        ყიდვა
+                         </Button>
+                    <Button
+                        className={classes.buttonCart}
+                        disabled={!getError() && state.option ? false : true}
+                        onClick={handleAddToCart}
+                        startIcon={<AddShoppingCartIcon />}
+                    >
+                        კალათში დამატება
+                         </Button>
+                    <Button className={classes.buttonClose}
+                        onClick={handleClose}
+                        startIcon={<CloseIcon />}
+                    >
+                        დახურვა
+                          </Button>
+                </ButtonGroup>
+                <FormHelperText error={getError()}>
+                    {getHeleperTextButtons()}
+                </FormHelperText>
+            </FormControl>
         </form>
     );
 })
